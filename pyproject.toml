@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "trieve_client_py"
+version = "0.3.0"
+description = "A client library for accessing trieve-server"
+authors = []
+readme = "README.md"
+packages = [
+    {include = "trieve_client"},
+]
+include = ["CHANGELOG.md", "trieve_client/py.typed"]
+
+
+[tool.poetry.dependencies]
+python = "^3.8"
+httpx = ">=0.20.0,<0.27.0"
+attrs = ">=21.3.0"
+python-dateutil = "^2.8.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+select = ["F", "I", "UP"]
+line-length = 120
