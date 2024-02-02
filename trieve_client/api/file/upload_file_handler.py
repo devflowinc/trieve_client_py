@@ -5,7 +5,7 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.default_error import DefaultError
+from ...models.error_response_body import ErrorResponseBody
 from ...models.upload_file_data import UploadFileData
 from ...models.upload_file_result import UploadFileResult
 from ...types import Response
@@ -14,10 +14,8 @@ from ...types import Response
 def _get_kwargs(
     *,
     body: UploadFileData,
-    tr_dataset: str,
 ) -> Dict[str, Any]:
     headers: Dict[str, Any] = {}
-    headers["TR-Dataset"] = tr_dataset
 
     _kwargs: Dict[str, Any] = {
         "method": "post",
@@ -35,13 +33,13 @@ def _get_kwargs(
 
 def _parse_response(
     *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[DefaultError, UploadFileResult]]:
+) -> Optional[Union[ErrorResponseBody, UploadFileResult]]:
     if response.status_code == HTTPStatus.OK:
         response_200 = UploadFileResult.from_dict(response.json())
 
         return response_200
     if response.status_code == HTTPStatus.BAD_REQUEST:
-        response_400 = DefaultError.from_dict(response.json())
+        response_400 = ErrorResponseBody.from_dict(response.json())
 
         return response_400
     if client.raise_on_unexpected_status:
@@ -52,7 +50,7 @@ def _parse_response(
 
 def _build_response(
     *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[DefaultError, UploadFileResult]]:
+) -> Response[Union[ErrorResponseBody, UploadFileResult]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -63,10 +61,9 @@ def _build_response(
 
 def sync_detailed(
     *,
-    client: AuthenticatedClient,
+    client: Union[AuthenticatedClient, Client],
     body: UploadFileData,
-    tr_dataset: str,
-) -> Response[Union[DefaultError, UploadFileResult]]:
+) -> Response[Union[ErrorResponseBody, UploadFileResult]]:
     """upload_file
 
      upload_file
@@ -78,7 +75,6 @@ def sync_detailed(
     admin or owner of the dataset's organization to upload a file.
 
     Args:
-        tr_dataset (str):
         body (UploadFileData):
 
     Raises:
@@ -86,12 +82,11 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[DefaultError, UploadFileResult]]
+        Response[Union[ErrorResponseBody, UploadFileResult]]
     """
 
     kwargs = _get_kwargs(
         body=body,
-        tr_dataset=tr_dataset,
     )
 
     response = client.get_httpx_client().request(
@@ -103,10 +98,9 @@ def sync_detailed(
 
 def sync(
     *,
-    client: AuthenticatedClient,
+    client: Union[AuthenticatedClient, Client],
     body: UploadFileData,
-    tr_dataset: str,
-) -> Optional[Union[DefaultError, UploadFileResult]]:
+) -> Optional[Union[ErrorResponseBody, UploadFileResult]]:
     """upload_file
 
      upload_file
@@ -118,7 +112,6 @@ def sync(
     admin or owner of the dataset's organization to upload a file.
 
     Args:
-        tr_dataset (str):
         body (UploadFileData):
 
     Raises:
@@ -126,22 +119,20 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[DefaultError, UploadFileResult]
+        Union[ErrorResponseBody, UploadFileResult]
     """
 
     return sync_detailed(
         client=client,
         body=body,
-        tr_dataset=tr_dataset,
     ).parsed
 
 
 async def asyncio_detailed(
     *,
-    client: AuthenticatedClient,
+    client: Union[AuthenticatedClient, Client],
     body: UploadFileData,
-    tr_dataset: str,
-) -> Response[Union[DefaultError, UploadFileResult]]:
+) -> Response[Union[ErrorResponseBody, UploadFileResult]]:
     """upload_file
 
      upload_file
@@ -153,7 +144,6 @@ async def asyncio_detailed(
     admin or owner of the dataset's organization to upload a file.
 
     Args:
-        tr_dataset (str):
         body (UploadFileData):
 
     Raises:
@@ -161,12 +151,11 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[DefaultError, UploadFileResult]]
+        Response[Union[ErrorResponseBody, UploadFileResult]]
     """
 
     kwargs = _get_kwargs(
         body=body,
-        tr_dataset=tr_dataset,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -176,10 +165,9 @@ async def asyncio_detailed(
 
 async def asyncio(
     *,
-    client: AuthenticatedClient,
+    client: Union[AuthenticatedClient, Client],
     body: UploadFileData,
-    tr_dataset: str,
-) -> Optional[Union[DefaultError, UploadFileResult]]:
+) -> Optional[Union[ErrorResponseBody, UploadFileResult]]:
     """upload_file
 
      upload_file
@@ -191,7 +179,6 @@ async def asyncio(
     admin or owner of the dataset's organization to upload a file.
 
     Args:
-        tr_dataset (str):
         body (UploadFileData):
 
     Raises:
@@ -199,13 +186,12 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[DefaultError, UploadFileResult]
+        Union[ErrorResponseBody, UploadFileResult]
     """
 
     return (
         await asyncio_detailed(
             client=client,
             body=body,
-            tr_dataset=tr_dataset,
         )
     ).parsed

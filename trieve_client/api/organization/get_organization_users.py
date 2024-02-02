@@ -5,31 +5,25 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.default_error import DefaultError
+from ...models.error_response_body import ErrorResponseBody
 from ...models.slim_user import SlimUser
 from ...types import Response
 
 
 def _get_kwargs(
     organization_id: str,
-    *,
-    tr_organization: str,
 ) -> Dict[str, Any]:
-    headers: Dict[str, Any] = {}
-    headers["TR-Organization"] = tr_organization
-
     _kwargs: Dict[str, Any] = {
         "method": "get",
         "url": f"/api/organization/users/{organization_id}",
     }
 
-    _kwargs["headers"] = headers
     return _kwargs
 
 
 def _parse_response(
     *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[DefaultError, List["SlimUser"]]]:
+) -> Optional[Union[ErrorResponseBody, List["SlimUser"]]]:
     if response.status_code == HTTPStatus.OK:
         response_200 = []
         _response_200 = response.json()
@@ -40,7 +34,7 @@ def _parse_response(
 
         return response_200
     if response.status_code == HTTPStatus.BAD_REQUEST:
-        response_400 = DefaultError.from_dict(response.json())
+        response_400 = ErrorResponseBody.from_dict(response.json())
 
         return response_400
     if client.raise_on_unexpected_status:
@@ -51,7 +45,7 @@ def _parse_response(
 
 def _build_response(
     *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[DefaultError, List["SlimUser"]]]:
+) -> Response[Union[ErrorResponseBody, List["SlimUser"]]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -63,9 +57,8 @@ def _build_response(
 def sync_detailed(
     organization_id: str,
     *,
-    client: AuthenticatedClient,
-    tr_organization: str,
-) -> Response[Union[DefaultError, List["SlimUser"]]]:
+    client: Union[AuthenticatedClient, Client],
+) -> Response[Union[ErrorResponseBody, List["SlimUser"]]]:
     """get_organization_users
 
      get_organization_users
@@ -75,19 +68,17 @@ def sync_detailed(
 
     Args:
         organization_id (str):
-        tr_organization (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[DefaultError, List['SlimUser']]]
+        Response[Union[ErrorResponseBody, List['SlimUser']]]
     """
 
     kwargs = _get_kwargs(
         organization_id=organization_id,
-        tr_organization=tr_organization,
     )
 
     response = client.get_httpx_client().request(
@@ -100,9 +91,8 @@ def sync_detailed(
 def sync(
     organization_id: str,
     *,
-    client: AuthenticatedClient,
-    tr_organization: str,
-) -> Optional[Union[DefaultError, List["SlimUser"]]]:
+    client: Union[AuthenticatedClient, Client],
+) -> Optional[Union[ErrorResponseBody, List["SlimUser"]]]:
     """get_organization_users
 
      get_organization_users
@@ -112,29 +102,26 @@ def sync(
 
     Args:
         organization_id (str):
-        tr_organization (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[DefaultError, List['SlimUser']]
+        Union[ErrorResponseBody, List['SlimUser']]
     """
 
     return sync_detailed(
         organization_id=organization_id,
         client=client,
-        tr_organization=tr_organization,
     ).parsed
 
 
 async def asyncio_detailed(
     organization_id: str,
     *,
-    client: AuthenticatedClient,
-    tr_organization: str,
-) -> Response[Union[DefaultError, List["SlimUser"]]]:
+    client: Union[AuthenticatedClient, Client],
+) -> Response[Union[ErrorResponseBody, List["SlimUser"]]]:
     """get_organization_users
 
      get_organization_users
@@ -144,19 +131,17 @@ async def asyncio_detailed(
 
     Args:
         organization_id (str):
-        tr_organization (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[DefaultError, List['SlimUser']]]
+        Response[Union[ErrorResponseBody, List['SlimUser']]]
     """
 
     kwargs = _get_kwargs(
         organization_id=organization_id,
-        tr_organization=tr_organization,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -167,9 +152,8 @@ async def asyncio_detailed(
 async def asyncio(
     organization_id: str,
     *,
-    client: AuthenticatedClient,
-    tr_organization: str,
-) -> Optional[Union[DefaultError, List["SlimUser"]]]:
+    client: Union[AuthenticatedClient, Client],
+) -> Optional[Union[ErrorResponseBody, List["SlimUser"]]]:
     """get_organization_users
 
      get_organization_users
@@ -179,20 +163,18 @@ async def asyncio(
 
     Args:
         organization_id (str):
-        tr_organization (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[DefaultError, List['SlimUser']]
+        Union[ErrorResponseBody, List['SlimUser']]
     """
 
     return (
         await asyncio_detailed(
             organization_id=organization_id,
             client=client,
-            tr_organization=tr_organization,
         )
     ).parsed

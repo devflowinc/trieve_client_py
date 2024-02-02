@@ -5,7 +5,7 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.default_error import DefaultError
+from ...models.error_response_body import ErrorResponseBody
 from ...models.generate_chunks_request import GenerateChunksRequest
 from ...types import Response
 
@@ -13,10 +13,8 @@ from ...types import Response
 def _get_kwargs(
     *,
     body: GenerateChunksRequest,
-    tr_dataset: str,
 ) -> Dict[str, Any]:
     headers: Dict[str, Any] = {}
-    headers["TR-Dataset"] = tr_dataset
 
     _kwargs: Dict[str, Any] = {
         "method": "post",
@@ -34,12 +32,12 @@ def _get_kwargs(
 
 def _parse_response(
     *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[DefaultError, str]]:
+) -> Optional[Union[ErrorResponseBody, str]]:
     if response.status_code == HTTPStatus.OK:
         response_200 = response.text
         return response_200
     if response.status_code == HTTPStatus.BAD_REQUEST:
-        response_400 = DefaultError.from_dict(response.json())
+        response_400 = ErrorResponseBody.from_dict(response.json())
 
         return response_400
     if client.raise_on_unexpected_status:
@@ -50,7 +48,7 @@ def _parse_response(
 
 def _build_response(
     *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[DefaultError, str]]:
+) -> Response[Union[ErrorResponseBody, str]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -61,10 +59,9 @@ def _build_response(
 
 def sync_detailed(
     *,
-    client: AuthenticatedClient,
+    client: Union[AuthenticatedClient, Client],
     body: GenerateChunksRequest,
-    tr_dataset: str,
-) -> Response[Union[DefaultError, str]]:
+) -> Response[Union[ErrorResponseBody, str]]:
     r"""augmented_generation_from_chunks
 
      augmented_generation_from_chunks
@@ -74,7 +71,6 @@ def sync_detailed(
     See more in the \"search before generate\" page at docs.trieve.ai.
 
     Args:
-        tr_dataset (str):
         body (GenerateChunksRequest):
 
     Raises:
@@ -82,12 +78,11 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[DefaultError, str]]
+        Response[Union[ErrorResponseBody, str]]
     """
 
     kwargs = _get_kwargs(
         body=body,
-        tr_dataset=tr_dataset,
     )
 
     response = client.get_httpx_client().request(
@@ -99,10 +94,9 @@ def sync_detailed(
 
 def sync(
     *,
-    client: AuthenticatedClient,
+    client: Union[AuthenticatedClient, Client],
     body: GenerateChunksRequest,
-    tr_dataset: str,
-) -> Optional[Union[DefaultError, str]]:
+) -> Optional[Union[ErrorResponseBody, str]]:
     r"""augmented_generation_from_chunks
 
      augmented_generation_from_chunks
@@ -112,7 +106,6 @@ def sync(
     See more in the \"search before generate\" page at docs.trieve.ai.
 
     Args:
-        tr_dataset (str):
         body (GenerateChunksRequest):
 
     Raises:
@@ -120,22 +113,20 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[DefaultError, str]
+        Union[ErrorResponseBody, str]
     """
 
     return sync_detailed(
         client=client,
         body=body,
-        tr_dataset=tr_dataset,
     ).parsed
 
 
 async def asyncio_detailed(
     *,
-    client: AuthenticatedClient,
+    client: Union[AuthenticatedClient, Client],
     body: GenerateChunksRequest,
-    tr_dataset: str,
-) -> Response[Union[DefaultError, str]]:
+) -> Response[Union[ErrorResponseBody, str]]:
     r"""augmented_generation_from_chunks
 
      augmented_generation_from_chunks
@@ -145,7 +136,6 @@ async def asyncio_detailed(
     See more in the \"search before generate\" page at docs.trieve.ai.
 
     Args:
-        tr_dataset (str):
         body (GenerateChunksRequest):
 
     Raises:
@@ -153,12 +143,11 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[DefaultError, str]]
+        Response[Union[ErrorResponseBody, str]]
     """
 
     kwargs = _get_kwargs(
         body=body,
-        tr_dataset=tr_dataset,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -168,10 +157,9 @@ async def asyncio_detailed(
 
 async def asyncio(
     *,
-    client: AuthenticatedClient,
+    client: Union[AuthenticatedClient, Client],
     body: GenerateChunksRequest,
-    tr_dataset: str,
-) -> Optional[Union[DefaultError, str]]:
+) -> Optional[Union[ErrorResponseBody, str]]:
     r"""augmented_generation_from_chunks
 
      augmented_generation_from_chunks
@@ -181,7 +169,6 @@ async def asyncio(
     See more in the \"search before generate\" page at docs.trieve.ai.
 
     Args:
-        tr_dataset (str):
         body (GenerateChunksRequest):
 
     Raises:
@@ -189,13 +176,12 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[DefaultError, str]
+        Union[ErrorResponseBody, str]
     """
 
     return (
         await asyncio_detailed(
             client=client,
             body=body,
-            tr_dataset=tr_dataset,
         )
     ).parsed

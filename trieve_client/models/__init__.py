@@ -25,13 +25,13 @@ from .dataset_and_usage import DatasetAndUsage
 from .dataset_dto import DatasetDTO
 from .dataset_group_query import DatasetGroupQuery
 from .dataset_usage_count import DatasetUsageCount
-from .default_error import DefaultError
 from .delete_bookmark_path_data import DeleteBookmarkPathData
 from .delete_dataset_request import DeleteDatasetRequest
 from .delete_group_data import DeleteGroupData
 from .delete_topic_data import DeleteTopicData
 from .delete_user_api_key_request import DeleteUserApiKeyRequest
 from .edit_message_data import EditMessageData
+from .error_response_body import ErrorResponseBody
 from .event import Event
 from .event_id import EventId
 from .event_return import EventReturn
@@ -110,13 +110,13 @@ __all__ = (
     "DatasetDTO",
     "DatasetGroupQuery",
     "DatasetUsageCount",
-    "DefaultError",
     "DeleteBookmarkPathData",
     "DeleteDatasetRequest",
     "DeleteGroupData",
     "DeleteTopicData",
     "DeleteUserApiKeyRequest",
     "EditMessageData",
+    "ErrorResponseBody",
     "Event",
     "EventId",
     "EventReturn",

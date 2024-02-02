@@ -5,31 +5,25 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.default_error import DefaultError
+from ...models.error_response_body import ErrorResponseBody
 from ...models.file import File
 from ...types import Response
 
 
 def _get_kwargs(
     user_id: str,
-    *,
-    tr_dataset: str,
 ) -> Dict[str, Any]:
-    headers: Dict[str, Any] = {}
-    headers["TR-Dataset"] = tr_dataset
-
     _kwargs: Dict[str, Any] = {
         "method": "get",
         "url": f"/api/user/files/{user_id}",
     }
 
-    _kwargs["headers"] = headers
     return _kwargs
 
 
 def _parse_response(
     *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[DefaultError, List["File"]]]:
+) -> Optional[Union[ErrorResponseBody, List["File"]]]:
     if response.status_code == HTTPStatus.OK:
         response_200 = []
         _response_200 = response.json()
@@ -40,7 +34,7 @@ def _parse_response(
 
         return response_200
     if response.status_code == HTTPStatus.BAD_REQUEST:
-        response_400 = DefaultError.from_dict(response.json())
+        response_400 = ErrorResponseBody.from_dict(response.json())
 
         return response_400
     if client.raise_on_unexpected_status:
@@ -51,7 +45,7 @@ def _parse_response(
 
 def _build_response(
     *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[DefaultError, List["File"]]]:
+) -> Response[Union[ErrorResponseBody, List["File"]]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -63,9 +57,8 @@ def _build_response(
 def sync_detailed(
     user_id: str,
     *,
-    client: AuthenticatedClient,
-    tr_dataset: str,
-) -> Response[Union[DefaultError, List["File"]]]:
+    client: Union[AuthenticatedClient, Client],
+) -> Response[Union[ErrorResponseBody, List["File"]]]:
     """get_user_files
 
      get_user_files
@@ -74,19 +67,17 @@ def sync_detailed(
 
     Args:
         user_id (str):
-        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[DefaultError, List['File']]]
+        Response[Union[ErrorResponseBody, List['File']]]
     """
 
     kwargs = _get_kwargs(
         user_id=user_id,
-        tr_dataset=tr_dataset,
     )
 
     response = client.get_httpx_client().request(
@@ -99,9 +90,8 @@ def sync_detailed(
 def sync(
     user_id: str,
     *,
-    client: AuthenticatedClient,
-    tr_dataset: str,
-) -> Optional[Union[DefaultError, List["File"]]]:
+    client: Union[AuthenticatedClient, Client],
+) -> Optional[Union[ErrorResponseBody, List["File"]]]:
     """get_user_files
 
      get_user_files
@@ -110,29 +100,26 @@ def sync(
 
     Args:
         user_id (str):
-        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[DefaultError, List['File']]
+        Union[ErrorResponseBody, List['File']]
     """
 
     return sync_detailed(
         user_id=user_id,
         client=client,
-        tr_dataset=tr_dataset,
     ).parsed
 
 
 async def asyncio_detailed(
     user_id: str,
     *,
-    client: AuthenticatedClient,
-    tr_dataset: str,
-) -> Response[Union[DefaultError, List["File"]]]:
+    client: Union[AuthenticatedClient, Client],
+) -> Response[Union[ErrorResponseBody, List["File"]]]:
     """get_user_files
 
      get_user_files
@@ -141,19 +128,17 @@ async def asyncio_detailed(
 
     Args:
         user_id (str):
-        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[DefaultError, List['File']]]
+        Response[Union[ErrorResponseBody, List['File']]]
     """
 
     kwargs = _get_kwargs(
         user_id=user_id,
-        tr_dataset=tr_dataset,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -164,9 +149,8 @@ async def asyncio_detailed(
 async def asyncio(
     user_id: str,
     *,
-    client: AuthenticatedClient,
-    tr_dataset: str,
-) -> Optional[Union[DefaultError, List["File"]]]:
+    client: Union[AuthenticatedClient, Client],
+) -> Optional[Union[ErrorResponseBody, List["File"]]]:
     """get_user_files
 
      get_user_files
@@ -175,20 +159,18 @@ async def asyncio(
 
     Args:
         user_id (str):
-        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[DefaultError, List['File']]
+        Union[ErrorResponseBody, List['File']]
     """
 
     return (
         await asyncio_detailed(
             user_id=user_id,
             client=client,
-            tr_dataset=tr_dataset,
         )
     ).parsed

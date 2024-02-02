@@ -5,31 +5,25 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.default_error import DefaultError
+from ...models.error_response_body import ErrorResponseBody
 from ...models.message import Message
 from ...types import Response
 
 
 def _get_kwargs(
     messages_topic_id: str,
-    *,
-    tr_dataset: str,
 ) -> Dict[str, Any]:
-    headers: Dict[str, Any] = {}
-    headers["TR-Dataset"] = tr_dataset
-
     _kwargs: Dict[str, Any] = {
         "method": "get",
         "url": f"/api/messages/{messages_topic_id}",
     }
 
-    _kwargs["headers"] = headers
     return _kwargs
 
 
 def _parse_response(
     *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[DefaultError, List["Message"]]]:
+) -> Optional[Union[ErrorResponseBody, List["Message"]]]:
     if response.status_code == HTTPStatus.OK:
         response_200 = []
         _response_200 = response.json()
@@ -40,7 +34,7 @@ def _parse_response(
 
         return response_200
     if response.status_code == HTTPStatus.BAD_REQUEST:
-        response_400 = DefaultError.from_dict(response.json())
+        response_400 = ErrorResponseBody.from_dict(response.json())
 
         return response_400
     if client.raise_on_unexpected_status:
@@ -51,7 +45,7 @@ def _parse_response(
 
 def _build_response(
     *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[DefaultError, List["Message"]]]:
+) -> Response[Union[ErrorResponseBody, List["Message"]]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -63,9 +57,8 @@ def _build_response(
 def sync_detailed(
     messages_topic_id: str,
     *,
-    client: AuthenticatedClient,
-    tr_dataset: str,
-) -> Response[Union[DefaultError, List["Message"]]]:
+    client: Union[AuthenticatedClient, Client],
+) -> Response[Union[ErrorResponseBody, List["Message"]]]:
     """get_all_messages
 
      get_all_messages
@@ -76,19 +69,17 @@ def sync_detailed(
 
     Args:
         messages_topic_id (str):
-        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[DefaultError, List['Message']]]
+        Response[Union[ErrorResponseBody, List['Message']]]
     """
 
     kwargs = _get_kwargs(
         messages_topic_id=messages_topic_id,
-        tr_dataset=tr_dataset,
     )
 
     response = client.get_httpx_client().request(
@@ -101,9 +92,8 @@ def sync_detailed(
 def sync(
     messages_topic_id: str,
     *,
-    client: AuthenticatedClient,
-    tr_dataset: str,
-) -> Optional[Union[DefaultError, List["Message"]]]:
+    client: Union[AuthenticatedClient, Client],
+) -> Optional[Union[ErrorResponseBody, List["Message"]]]:
     """get_all_messages
 
      get_all_messages
@@ -114,29 +104,26 @@ def sync(
 
     Args:
         messages_topic_id (str):
-        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[DefaultError, List['Message']]
+        Union[ErrorResponseBody, List['Message']]
     """
 
     return sync_detailed(
         messages_topic_id=messages_topic_id,
         client=client,
-        tr_dataset=tr_dataset,
     ).parsed
 
 
 async def asyncio_detailed(
     messages_topic_id: str,
     *,
-    client: AuthenticatedClient,
-    tr_dataset: str,
-) -> Response[Union[DefaultError, List["Message"]]]:
+    client: Union[AuthenticatedClient, Client],
+) -> Response[Union[ErrorResponseBody, List["Message"]]]:
     """get_all_messages
 
      get_all_messages
@@ -147,19 +134,17 @@ async def asyncio_detailed(
 
     Args:
         messages_topic_id (str):
-        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[DefaultError, List['Message']]]
+        Response[Union[ErrorResponseBody, List['Message']]]
     """
 
     kwargs = _get_kwargs(
         messages_topic_id=messages_topic_id,
-        tr_dataset=tr_dataset,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -170,9 +155,8 @@ async def asyncio_detailed(
 async def asyncio(
     messages_topic_id: str,
     *,
-    client: AuthenticatedClient,
-    tr_dataset: str,
-) -> Optional[Union[DefaultError, List["Message"]]]:
+    client: Union[AuthenticatedClient, Client],
+) -> Optional[Union[ErrorResponseBody, List["Message"]]]:
     """get_all_messages
 
      get_all_messages
@@ -183,20 +167,18 @@ async def asyncio(
 
     Args:
         messages_topic_id (str):
-        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[DefaultError, List['Message']]
+        Union[ErrorResponseBody, List['Message']]
     """
 
     return (
         await asyncio_detailed(
             messages_topic_id=messages_topic_id,
             client=client,
-            tr_dataset=tr_dataset,
         )
     ).parsed

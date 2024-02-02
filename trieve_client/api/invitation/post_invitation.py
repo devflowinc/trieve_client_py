@@ -5,7 +5,7 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.default_error import DefaultError
+from ...models.error_response_body import ErrorResponseBody
 from ...models.invitation_data import InvitationData
 from ...types import Response
 
@@ -13,10 +13,8 @@ from ...types import Response
 def _get_kwargs(
     *,
     body: InvitationData,
-    tr_organization: str,
 ) -> Dict[str, Any]:
     headers: Dict[str, Any] = {}
-    headers["TR-Organization"] = tr_organization
 
     _kwargs: Dict[str, Any] = {
         "method": "post",
@@ -34,12 +32,12 @@ def _get_kwargs(
 
 def _parse_response(
     *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[Any, DefaultError]]:
+) -> Optional[Union[Any, ErrorResponseBody]]:
     if response.status_code == HTTPStatus.NO_CONTENT:
         response_204 = cast(Any, None)
         return response_204
     if response.status_code == HTTPStatus.BAD_REQUEST:
-        response_400 = DefaultError.from_dict(response.json())
+        response_400 = ErrorResponseBody.from_dict(response.json())
 
         return response_400
     if client.raise_on_unexpected_status:
@@ -50,7 +48,7 @@ def _parse_response(
 
 def _build_response(
     *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[Any, DefaultError]]:
+) -> Response[Union[Any, ErrorResponseBody]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -61,10 +59,9 @@ def _build_response(
 
 def sync_detailed(
     *,
-    client: AuthenticatedClient,
+    client: Union[AuthenticatedClient, Client],
     body: InvitationData,
-    tr_organization: str,
-) -> Response[Union[Any, DefaultError]]:
+) -> Response[Union[Any, ErrorResponseBody]]:
     """send_invitation
 
      send_invitation
@@ -74,7 +71,6 @@ def sync_detailed(
     their.
 
     Args:
-        tr_organization (str):
         body (InvitationData):
 
     Raises:
@@ -82,12 +78,11 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[Any, DefaultError]]
+        Response[Union[Any, ErrorResponseBody]]
     """
 
     kwargs = _get_kwargs(
         body=body,
-        tr_organization=tr_organization,
     )
 
     response = client.get_httpx_client().request(
@@ -99,10 +94,9 @@ def sync_detailed(
 
 def sync(
     *,
-    client: AuthenticatedClient,
+    client: Union[AuthenticatedClient, Client],
     body: InvitationData,
-    tr_organization: str,
-) -> Optional[Union[Any, DefaultError]]:
+) -> Optional[Union[Any, ErrorResponseBody]]:
     """send_invitation
 
      send_invitation
@@ -112,7 +106,6 @@ def sync(
     their.
 
     Args:
-        tr_organization (str):
         body (InvitationData):
 
     Raises:
@@ -120,22 +113,20 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[Any, DefaultError]
+        Union[Any, ErrorResponseBody]
     """
 
     return sync_detailed(
         client=client,
         body=body,
-        tr_organization=tr_organization,
     ).parsed
 
 
 async def asyncio_detailed(
     *,
-    client: AuthenticatedClient,
+    client: Union[AuthenticatedClient, Client],
     body: InvitationData,
-    tr_organization: str,
-) -> Response[Union[Any, DefaultError]]:
+) -> Response[Union[Any, ErrorResponseBody]]:
     """send_invitation
 
      send_invitation
@@ -145,7 +136,6 @@ async def asyncio_detailed(
     their.
 
     Args:
-        tr_organization (str):
         body (InvitationData):
 
     Raises:
@@ -153,12 +143,11 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[Any, DefaultError]]
+        Response[Union[Any, ErrorResponseBody]]
     """
 
     kwargs = _get_kwargs(
         body=body,
-        tr_organization=tr_organization,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -168,10 +157,9 @@ async def asyncio_detailed(
 
 async def asyncio(
     *,
-    client: AuthenticatedClient,
+    client: Union[AuthenticatedClient, Client],
     body: InvitationData,
-    tr_organization: str,
-) -> Optional[Union[Any, DefaultError]]:
+) -> Optional[Union[Any, ErrorResponseBody]]:
     """send_invitation
 
      send_invitation
@@ -181,7 +169,6 @@ async def asyncio(
     their.
 
     Args:
-        tr_organization (str):
         body (InvitationData):
 
     Raises:
@@ -189,13 +176,12 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[Any, DefaultError]
+        Union[Any, ErrorResponseBody]
     """
 
     return (
         await asyncio_detailed(
             client=client,
             body=body,
-            tr_organization=tr_organization,
         )
     ).parsed

@@ -3,11 +3,11 @@ from typing import Any, Dict, List, Type, TypeVar
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-T = TypeVar("T", bound="DefaultError")
+T = TypeVar("T", bound="ErrorResponseBody")
 
 
 @_attrs_define
-class DefaultError:
+class ErrorResponseBody:
     """
     Attributes:
         message (str):
@@ -34,12 +34,12 @@ class DefaultError:
         d = src_dict.copy()
         message = d.pop("message")
 
-        default_error = cls(
+        error_response_body = cls(
             message=message,
         )
 
-        default_error.additional_properties = d
-        return default_error
+        error_response_body.additional_properties = d
+        return error_response_body
 
     @property
     def additional_keys(self) -> List[str]:

@@ -5,7 +5,7 @@ import httpx
 
 from ... import errors
 from ...client import AuthenticatedClient, Client
-from ...models.default_error import DefaultError
+from ...models.error_response_body import ErrorResponseBody
 from ...models.set_user_api_key_request import SetUserApiKeyRequest
 from ...models.set_user_api_key_response import SetUserApiKeyResponse
 from ...types import Response
@@ -33,13 +33,13 @@ def _get_kwargs(
 
 def _parse_response(
     *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[DefaultError, SetUserApiKeyResponse]]:
+) -> Optional[Union[ErrorResponseBody, SetUserApiKeyResponse]]:
     if response.status_code == HTTPStatus.OK:
         response_200 = SetUserApiKeyResponse.from_dict(response.json())
 
         return response_200
     if response.status_code == HTTPStatus.BAD_REQUEST:
-        response_400 = DefaultError.from_dict(response.json())
+        response_400 = ErrorResponseBody.from_dict(response.json())
 
         return response_400
     if client.raise_on_unexpected_status:
@@ -50,7 +50,7 @@ def _parse_response(
 
 def _build_response(
     *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[DefaultError, SetUserApiKeyResponse]]:
+) -> Response[Union[ErrorResponseBody, SetUserApiKeyResponse]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -61,9 +61,9 @@ def _build_response(
 
 def sync_detailed(
     *,
-    client: AuthenticatedClient,
+    client: Union[AuthenticatedClient, Client],
     body: SetUserApiKeyRequest,
-) -> Response[Union[DefaultError, SetUserApiKeyResponse]]:
+) -> Response[Union[ErrorResponseBody, SetUserApiKeyResponse]]:
     """set_user_api_key
 
      set_user_api_key
@@ -80,7 +80,7 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[DefaultError, SetUserApiKeyResponse]]
+        Response[Union[ErrorResponseBody, SetUserApiKeyResponse]]
     """
 
     kwargs = _get_kwargs(
@@ -96,9 +96,9 @@ def sync_detailed(
 
 def sync(
     *,
-    client: AuthenticatedClient,
+    client: Union[AuthenticatedClient, Client],
     body: SetUserApiKeyRequest,
-) -> Optional[Union[DefaultError, SetUserApiKeyResponse]]:
+) -> Optional[Union[ErrorResponseBody, SetUserApiKeyResponse]]:
     """set_user_api_key
 
      set_user_api_key
@@ -115,7 +115,7 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[DefaultError, SetUserApiKeyResponse]
+        Union[ErrorResponseBody, SetUserApiKeyResponse]
     """
 
     return sync_detailed(
@@ -126,9 +126,9 @@ def sync(
 
 async def asyncio_detailed(
     *,
-    client: AuthenticatedClient,
+    client: Union[AuthenticatedClient, Client],
     body: SetUserApiKeyRequest,
-) -> Response[Union[DefaultError, SetUserApiKeyResponse]]:
+) -> Response[Union[ErrorResponseBody, SetUserApiKeyResponse]]:
     """set_user_api_key
 
      set_user_api_key
@@ -145,7 +145,7 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[DefaultError, SetUserApiKeyResponse]]
+        Response[Union[ErrorResponseBody, SetUserApiKeyResponse]]
     """
 
     kwargs = _get_kwargs(
@@ -159,9 +159,9 @@ async def asyncio_detailed(
 
 async def asyncio(
     *,
-    client: AuthenticatedClient,
+    client: Union[AuthenticatedClient, Client],
     body: SetUserApiKeyRequest,
-) -> Optional[Union[DefaultError, SetUserApiKeyResponse]]:
+) -> Optional[Union[ErrorResponseBody, SetUserApiKeyResponse]]:
     """set_user_api_key
 
      set_user_api_key
@@ -178,7 +178,7 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[DefaultError, SetUserApiKeyResponse]
+        Union[ErrorResponseBody, SetUserApiKeyResponse]
     """
 
     return (

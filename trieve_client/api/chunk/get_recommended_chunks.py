@@ -6,7 +6,7 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.chunk_metadata_with_file_data import ChunkMetadataWithFileData
-from ...models.default_error import DefaultError
+from ...models.error_response_body import ErrorResponseBody
 from ...models.recommend_chunks_request import RecommendChunksRequest
 from ...types import Response
 
@@ -14,10 +14,8 @@ from ...types import Response
 def _get_kwargs(
     *,
     body: RecommendChunksRequest,
-    tr_dataset: str,
 ) -> Dict[str, Any]:
     headers: Dict[str, Any] = {}
-    headers["TR-Dataset"] = tr_dataset
 
     _kwargs: Dict[str, Any] = {
         "method": "post",
@@ -35,7 +33,7 @@ def _get_kwargs(
 
 def _parse_response(
     *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[DefaultError, List["ChunkMetadataWithFileData"]]]:
+) -> Optional[Union[ErrorResponseBody, List["ChunkMetadataWithFileData"]]]:
     if response.status_code == HTTPStatus.OK:
         response_200 = []
         _response_200 = response.json()
@@ -46,7 +44,7 @@ def _parse_response(
 
         return response_200
     if response.status_code == HTTPStatus.BAD_REQUEST:
-        response_400 = DefaultError.from_dict(response.json())
+        response_400 = ErrorResponseBody.from_dict(response.json())
 
         return response_400
     if client.raise_on_unexpected_status:
@@ -57,7 +55,7 @@ def _parse_response(
 
 def _build_response(
     *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[DefaultError, List["ChunkMetadataWithFileData"]]]:
+) -> Response[Union[ErrorResponseBody, List["ChunkMetadataWithFileData"]]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -68,10 +66,9 @@ def _build_response(
 
 def sync_detailed(
     *,
-    client: AuthenticatedClient,
+    client: Union[AuthenticatedClient, Client],
     body: RecommendChunksRequest,
-    tr_dataset: str,
-) -> Response[Union[DefaultError, List["ChunkMetadataWithFileData"]]]:
+) -> Response[Union[ErrorResponseBody, List["ChunkMetadataWithFileData"]]]:
     r"""get_recommended_chunks
 
      get_recommended_chunks
@@ -81,7 +78,6 @@ def sync_detailed(
     well with our groups endpoint.
 
     Args:
-        tr_dataset (str):
         body (RecommendChunksRequest):
 
     Raises:
@@ -89,12 +85,11 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[DefaultError, List['ChunkMetadataWithFileData']]]
+        Response[Union[ErrorResponseBody, List['ChunkMetadataWithFileData']]]
     """
 
     kwargs = _get_kwargs(
         body=body,
-        tr_dataset=tr_dataset,
     )
 
     response = client.get_httpx_client().request(
@@ -106,10 +101,9 @@ def sync_detailed(
 
 def sync(
     *,
-    client: AuthenticatedClient,
+    client: Union[AuthenticatedClient, Client],
     body: RecommendChunksRequest,
-    tr_dataset: str,
-) -> Optional[Union[DefaultError, List["ChunkMetadataWithFileData"]]]:
+) -> Optional[Union[ErrorResponseBody, List["ChunkMetadataWithFileData"]]]:
     r"""get_recommended_chunks
 
      get_recommended_chunks
@@ -119,7 +113,6 @@ def sync(
     well with our groups endpoint.
 
     Args:
-        tr_dataset (str):
         body (RecommendChunksRequest):
 
     Raises:
@@ -127,22 +120,20 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[DefaultError, List['ChunkMetadataWithFileData']]
+        Union[ErrorResponseBody, List['ChunkMetadataWithFileData']]
     """
 
     return sync_detailed(
         client=client,
         body=body,
-        tr_dataset=tr_dataset,
     ).parsed
 
 
 async def asyncio_detailed(
     *,
-    client: AuthenticatedClient,
+    client: Union[AuthenticatedClient, Client],
     body: RecommendChunksRequest,
-    tr_dataset: str,
-) -> Response[Union[DefaultError, List["ChunkMetadataWithFileData"]]]:
+) -> Response[Union[ErrorResponseBody, List["ChunkMetadataWithFileData"]]]:
     r"""get_recommended_chunks
 
      get_recommended_chunks
@@ -152,7 +143,6 @@ async def asyncio_detailed(
     well with our groups endpoint.
 
     Args:
-        tr_dataset (str):
         body (RecommendChunksRequest):
 
     Raises:
@@ -160,12 +150,11 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[DefaultError, List['ChunkMetadataWithFileData']]]
+        Response[Union[ErrorResponseBody, List['ChunkMetadataWithFileData']]]
     """
 
     kwargs = _get_kwargs(
         body=body,
-        tr_dataset=tr_dataset,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -175,10 +164,9 @@ async def asyncio_detailed(
 
 async def asyncio(
     *,
-    client: AuthenticatedClient,
+    client: Union[AuthenticatedClient, Client],
     body: RecommendChunksRequest,
-    tr_dataset: str,
-) -> Optional[Union[DefaultError, List["ChunkMetadataWithFileData"]]]:
+) -> Optional[Union[ErrorResponseBody, List["ChunkMetadataWithFileData"]]]:
     r"""get_recommended_chunks
 
      get_recommended_chunks
@@ -188,7 +176,6 @@ async def asyncio(
     well with our groups endpoint.
 
     Args:
-        tr_dataset (str):
         body (RecommendChunksRequest):
 
     Raises:
@@ -196,13 +183,12 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[DefaultError, List['ChunkMetadataWithFileData']]
+        Union[ErrorResponseBody, List['ChunkMetadataWithFileData']]
     """
 
     return (
         await asyncio_detailed(
             client=client,
             body=body,
-            tr_dataset=tr_dataset,
         )
     ).parsed

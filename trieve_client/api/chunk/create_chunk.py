@@ -6,7 +6,7 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.create_chunk_data import CreateChunkData
-from ...models.default_error import DefaultError
+from ...models.error_response_body import ErrorResponseBody
 from ...models.return_created_chunk import ReturnCreatedChunk
 from ...types import Response
 
@@ -14,10 +14,8 @@ from ...types import Response
 def _get_kwargs(
     *,
     body: CreateChunkData,
-    tr_dataset: str,
 ) -> Dict[str, Any]:
     headers: Dict[str, Any] = {}
-    headers["TR-Dataset"] = tr_dataset
 
     _kwargs: Dict[str, Any] = {
         "method": "post",
@@ -35,13 +33,13 @@ def _get_kwargs(
 
 def _parse_response(
     *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Optional[Union[DefaultError, ReturnCreatedChunk]]:
+) -> Optional[Union[ErrorResponseBody, ReturnCreatedChunk]]:
     if response.status_code == HTTPStatus.OK:
         response_200 = ReturnCreatedChunk.from_dict(response.json())
 
         return response_200
     if response.status_code == HTTPStatus.BAD_REQUEST:
-        response_400 = DefaultError.from_dict(response.json())
+        response_400 = ErrorResponseBody.from_dict(response.json())
 
         return response_400
     if client.raise_on_unexpected_status:
@@ -52,7 +50,7 @@ def _parse_response(
 
 def _build_response(
     *, client: Union[AuthenticatedClient, Client], response: httpx.Response
-) -> Response[Union[DefaultError, ReturnCreatedChunk]]:
+) -> Response[Union[ErrorResponseBody, ReturnCreatedChunk]]:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -63,10 +61,9 @@ def _build_response(
 
 def sync_detailed(
     *,
-    client: AuthenticatedClient,
+    client: Union[AuthenticatedClient, Client],
     body: CreateChunkData,
-    tr_dataset: str,
-) -> Response[Union[DefaultError, ReturnCreatedChunk]]:
+) -> Response[Union[ErrorResponseBody, ReturnCreatedChunk]]:
     """create_chunk
 
      create_chunk
@@ -75,7 +72,6 @@ def sync_detailed(
     fail. Once a chunk is created, it can be searched for using the search endpoint.
 
     Args:
-        tr_dataset (str):
         body (CreateChunkData):
 
     Raises:
@@ -83,12 +79,11 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[DefaultError, ReturnCreatedChunk]]
+        Response[Union[ErrorResponseBody, ReturnCreatedChunk]]
     """
 
     kwargs = _get_kwargs(
         body=body,
-        tr_dataset=tr_dataset,
     )
 
     response = client.get_httpx_client().request(
@@ -100,10 +95,9 @@ def sync_detailed(
 
 def sync(
     *,
-    client: AuthenticatedClient,
+    client: Union[AuthenticatedClient, Client],
     body: CreateChunkData,
-    tr_dataset: str,
-) -> Optional[Union[DefaultError, ReturnCreatedChunk]]:
+) -> Optional[Union[ErrorResponseBody, ReturnCreatedChunk]]:
     """create_chunk
 
      create_chunk
@@ -112,7 +106,6 @@ def sync(
     fail. Once a chunk is created, it can be searched for using the search endpoint.
 
     Args:
-        tr_dataset (str):
         body (CreateChunkData):
 
     Raises:
@@ -120,22 +113,20 @@ def sync(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[DefaultError, ReturnCreatedChunk]
+        Union[ErrorResponseBody, ReturnCreatedChunk]
     """
 
     return sync_detailed(
         client=client,
         body=body,
-        tr_dataset=tr_dataset,
     ).parsed
 
 
 async def asyncio_detailed(
     *,
-    client: AuthenticatedClient,
+    client: Union[AuthenticatedClient, Client],
     body: CreateChunkData,
-    tr_dataset: str,
-) -> Response[Union[DefaultError, ReturnCreatedChunk]]:
+) -> Response[Union[ErrorResponseBody, ReturnCreatedChunk]]:
     """create_chunk
 
      create_chunk
@@ -144,7 +135,6 @@ async def asyncio_detailed(
     fail. Once a chunk is created, it can be searched for using the search endpoint.
 
     Args:
-        tr_dataset (str):
         body (CreateChunkData):
 
     Raises:
@@ -152,12 +142,11 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Union[DefaultError, ReturnCreatedChunk]]
+        Response[Union[ErrorResponseBody, ReturnCreatedChunk]]
     """
 
     kwargs = _get_kwargs(
         body=body,
-        tr_dataset=tr_dataset,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -167,10 +156,9 @@ async def asyncio_detailed(
 
 async def asyncio(
     *,
-    client: AuthenticatedClient,
+    client: Union[AuthenticatedClient, Client],
     body: CreateChunkData,
-    tr_dataset: str,
-) -> Optional[Union[DefaultError, ReturnCreatedChunk]]:
+) -> Optional[Union[ErrorResponseBody, ReturnCreatedChunk]]:
     """create_chunk
 
      create_chunk
@@ -179,7 +167,6 @@ async def asyncio(
     fail. Once a chunk is created, it can be searched for using the search endpoint.
 
     Args:
-        tr_dataset (str):
         body (CreateChunkData):
 
     Raises:
@@ -187,13 +174,12 @@ async def asyncio(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Union[DefaultError, ReturnCreatedChunk]
+        Union[ErrorResponseBody, ReturnCreatedChunk]
     """
 
     return (
         await asyncio_detailed(
             client=client,
             body=body,
-            tr_dataset=tr_dataset,
         )
     ).parsed
