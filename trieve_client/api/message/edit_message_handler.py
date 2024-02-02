@@ -13,8 +13,10 @@ from ...types import Response
 def _get_kwargs(
     *,
     body: EditMessageData,
+    tr_dataset: str,
 ) -> Dict[str, Any]:
     headers: Dict[str, Any] = {}
+    headers["TR-Dataset"] = tr_dataset
 
     _kwargs: Dict[str, Any] = {
         "method": "put",
@@ -59,8 +61,9 @@ def _build_response(
 
 def sync_detailed(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: EditMessageData,
+    tr_dataset: str,
 ) -> Response[Union[Any, ErrorResponseBody]]:
     """edit_message
 
@@ -72,6 +75,7 @@ def sync_detailed(
     using RAG. The structure will look like `[chunks]||mesage`. See docs.trieve.ai for more information.
 
     Args:
+        tr_dataset (str):
         body (EditMessageData):
 
     Raises:
@@ -84,6 +88,7 @@ def sync_detailed(
 
     kwargs = _get_kwargs(
         body=body,
+        tr_dataset=tr_dataset,
     )
 
     response = client.get_httpx_client().request(
@@ -95,8 +100,9 @@ def sync_detailed(
 
 def sync(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: EditMessageData,
+    tr_dataset: str,
 ) -> Optional[Union[Any, ErrorResponseBody]]:
     """edit_message
 
@@ -108,6 +114,7 @@ def sync(
     using RAG. The structure will look like `[chunks]||mesage`. See docs.trieve.ai for more information.
 
     Args:
+        tr_dataset (str):
         body (EditMessageData):
 
     Raises:
@@ -121,13 +128,15 @@ def sync(
     return sync_detailed(
         client=client,
         body=body,
+        tr_dataset=tr_dataset,
     ).parsed
 
 
 async def asyncio_detailed(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: EditMessageData,
+    tr_dataset: str,
 ) -> Response[Union[Any, ErrorResponseBody]]:
     """edit_message
 
@@ -139,6 +148,7 @@ async def asyncio_detailed(
     using RAG. The structure will look like `[chunks]||mesage`. See docs.trieve.ai for more information.
 
     Args:
+        tr_dataset (str):
         body (EditMessageData):
 
     Raises:
@@ -151,6 +161,7 @@ async def asyncio_detailed(
 
     kwargs = _get_kwargs(
         body=body,
+        tr_dataset=tr_dataset,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -160,8 +171,9 @@ async def asyncio_detailed(
 
 async def asyncio(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: EditMessageData,
+    tr_dataset: str,
 ) -> Optional[Union[Any, ErrorResponseBody]]:
     """edit_message
 
@@ -173,6 +185,7 @@ async def asyncio(
     using RAG. The structure will look like `[chunks]||mesage`. See docs.trieve.ai for more information.
 
     Args:
+        tr_dataset (str):
         body (EditMessageData):
 
     Raises:
@@ -187,5 +200,6 @@ async def asyncio(
         await asyncio_detailed(
             client=client,
             body=body,
+            tr_dataset=tr_dataset,
         )
     ).parsed

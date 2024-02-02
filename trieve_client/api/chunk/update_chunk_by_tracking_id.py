@@ -13,8 +13,10 @@ from ...types import Response
 def _get_kwargs(
     *,
     body: UpdateChunkByTrackingIdData,
+    tr_dataset: str,
 ) -> Dict[str, Any]:
     headers: Dict[str, Any] = {}
+    headers["TR-Dataset"] = tr_dataset
 
     _kwargs: Dict[str, Any] = {
         "method": "put",
@@ -59,8 +61,9 @@ def _build_response(
 
 def sync_detailed(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: UpdateChunkByTrackingIdData,
+    tr_dataset: str,
 ) -> Response[Union[Any, ErrorResponseBody]]:
     """update_chunk_by_tracking_id
 
@@ -70,6 +73,7 @@ def sync_detailed(
     and want to use the tracking_id to identify the chunk.
 
     Args:
+        tr_dataset (str):
         body (UpdateChunkByTrackingIdData):
 
     Raises:
@@ -82,6 +86,7 @@ def sync_detailed(
 
     kwargs = _get_kwargs(
         body=body,
+        tr_dataset=tr_dataset,
     )
 
     response = client.get_httpx_client().request(
@@ -93,8 +98,9 @@ def sync_detailed(
 
 def sync(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: UpdateChunkByTrackingIdData,
+    tr_dataset: str,
 ) -> Optional[Union[Any, ErrorResponseBody]]:
     """update_chunk_by_tracking_id
 
@@ -104,6 +110,7 @@ def sync(
     and want to use the tracking_id to identify the chunk.
 
     Args:
+        tr_dataset (str):
         body (UpdateChunkByTrackingIdData):
 
     Raises:
@@ -117,13 +124,15 @@ def sync(
     return sync_detailed(
         client=client,
         body=body,
+        tr_dataset=tr_dataset,
     ).parsed
 
 
 async def asyncio_detailed(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: UpdateChunkByTrackingIdData,
+    tr_dataset: str,
 ) -> Response[Union[Any, ErrorResponseBody]]:
     """update_chunk_by_tracking_id
 
@@ -133,6 +142,7 @@ async def asyncio_detailed(
     and want to use the tracking_id to identify the chunk.
 
     Args:
+        tr_dataset (str):
         body (UpdateChunkByTrackingIdData):
 
     Raises:
@@ -145,6 +155,7 @@ async def asyncio_detailed(
 
     kwargs = _get_kwargs(
         body=body,
+        tr_dataset=tr_dataset,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -154,8 +165,9 @@ async def asyncio_detailed(
 
 async def asyncio(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: UpdateChunkByTrackingIdData,
+    tr_dataset: str,
 ) -> Optional[Union[Any, ErrorResponseBody]]:
     """update_chunk_by_tracking_id
 
@@ -165,6 +177,7 @@ async def asyncio(
     and want to use the tracking_id to identify the chunk.
 
     Args:
+        tr_dataset (str):
         body (UpdateChunkByTrackingIdData):
 
     Raises:
@@ -179,5 +192,6 @@ async def asyncio(
         await asyncio_detailed(
             client=client,
             body=body,
+            tr_dataset=tr_dataset,
         )
     ).parsed

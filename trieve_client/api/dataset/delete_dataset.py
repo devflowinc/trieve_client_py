@@ -13,8 +13,10 @@ from ...types import Response
 def _get_kwargs(
     *,
     body: DeleteDatasetRequest,
+    tr_organization: str,
 ) -> Dict[str, Any]:
     headers: Dict[str, Any] = {}
+    headers["TR-Organization"] = tr_organization
 
     _kwargs: Dict[str, Any] = {
         "method": "delete",
@@ -59,8 +61,9 @@ def _build_response(
 
 def sync_detailed(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: DeleteDatasetRequest,
+    tr_organization: str,
 ) -> Response[Union[Any, ErrorResponseBody]]:
     """delete_dataset
 
@@ -69,6 +72,7 @@ def sync_detailed(
     Delete a dataset. The auth'ed user must be an owner of the organization to delete a dataset.
 
     Args:
+        tr_organization (str):
         body (DeleteDatasetRequest):
 
     Raises:
@@ -81,6 +85,7 @@ def sync_detailed(
 
     kwargs = _get_kwargs(
         body=body,
+        tr_organization=tr_organization,
     )
 
     response = client.get_httpx_client().request(
@@ -92,8 +97,9 @@ def sync_detailed(
 
 def sync(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: DeleteDatasetRequest,
+    tr_organization: str,
 ) -> Optional[Union[Any, ErrorResponseBody]]:
     """delete_dataset
 
@@ -102,6 +108,7 @@ def sync(
     Delete a dataset. The auth'ed user must be an owner of the organization to delete a dataset.
 
     Args:
+        tr_organization (str):
         body (DeleteDatasetRequest):
 
     Raises:
@@ -115,13 +122,15 @@ def sync(
     return sync_detailed(
         client=client,
         body=body,
+        tr_organization=tr_organization,
     ).parsed
 
 
 async def asyncio_detailed(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: DeleteDatasetRequest,
+    tr_organization: str,
 ) -> Response[Union[Any, ErrorResponseBody]]:
     """delete_dataset
 
@@ -130,6 +139,7 @@ async def asyncio_detailed(
     Delete a dataset. The auth'ed user must be an owner of the organization to delete a dataset.
 
     Args:
+        tr_organization (str):
         body (DeleteDatasetRequest):
 
     Raises:
@@ -142,6 +152,7 @@ async def asyncio_detailed(
 
     kwargs = _get_kwargs(
         body=body,
+        tr_organization=tr_organization,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -151,8 +162,9 @@ async def asyncio_detailed(
 
 async def asyncio(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: DeleteDatasetRequest,
+    tr_organization: str,
 ) -> Optional[Union[Any, ErrorResponseBody]]:
     """delete_dataset
 
@@ -161,6 +173,7 @@ async def asyncio(
     Delete a dataset. The auth'ed user must be an owner of the organization to delete a dataset.
 
     Args:
+        tr_organization (str):
         body (DeleteDatasetRequest):
 
     Raises:
@@ -175,5 +188,6 @@ async def asyncio(
         await asyncio_detailed(
             client=client,
             body=body,
+            tr_organization=tr_organization,
         )
     ).parsed

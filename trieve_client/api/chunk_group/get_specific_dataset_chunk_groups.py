@@ -13,12 +13,18 @@ from ...types import Response
 def _get_kwargs(
     dataset_id: str,
     page: int,
+    *,
+    tr_dataset: str,
 ) -> Dict[str, Any]:
+    headers: Dict[str, Any] = {}
+    headers["TR-Dataset"] = tr_dataset
+
     _kwargs: Dict[str, Any] = {
         "method": "get",
         "url": f"/api/dataset/groups/{dataset_id}/{page}",
     }
 
+    _kwargs["headers"] = headers
     return _kwargs
 
 
@@ -54,7 +60,8 @@ def sync_detailed(
     dataset_id: str,
     page: int,
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
+    tr_dataset: str,
 ) -> Response[Union[ErrorResponseBody, GroupData]]:
     """get_dataset_groups
 
@@ -65,6 +72,7 @@ def sync_detailed(
     Args:
         dataset_id (str):
         page (int):
+        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -77,6 +85,7 @@ def sync_detailed(
     kwargs = _get_kwargs(
         dataset_id=dataset_id,
         page=page,
+        tr_dataset=tr_dataset,
     )
 
     response = client.get_httpx_client().request(
@@ -90,7 +99,8 @@ def sync(
     dataset_id: str,
     page: int,
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
+    tr_dataset: str,
 ) -> Optional[Union[ErrorResponseBody, GroupData]]:
     """get_dataset_groups
 
@@ -101,6 +111,7 @@ def sync(
     Args:
         dataset_id (str):
         page (int):
+        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -114,6 +125,7 @@ def sync(
         dataset_id=dataset_id,
         page=page,
         client=client,
+        tr_dataset=tr_dataset,
     ).parsed
 
 
@@ -121,7 +133,8 @@ async def asyncio_detailed(
     dataset_id: str,
     page: int,
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
+    tr_dataset: str,
 ) -> Response[Union[ErrorResponseBody, GroupData]]:
     """get_dataset_groups
 
@@ -132,6 +145,7 @@ async def asyncio_detailed(
     Args:
         dataset_id (str):
         page (int):
+        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -144,6 +158,7 @@ async def asyncio_detailed(
     kwargs = _get_kwargs(
         dataset_id=dataset_id,
         page=page,
+        tr_dataset=tr_dataset,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -155,7 +170,8 @@ async def asyncio(
     dataset_id: str,
     page: int,
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
+    tr_dataset: str,
 ) -> Optional[Union[ErrorResponseBody, GroupData]]:
     """get_dataset_groups
 
@@ -166,6 +182,7 @@ async def asyncio(
     Args:
         dataset_id (str):
         page (int):
+        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -180,5 +197,6 @@ async def asyncio(
             dataset_id=dataset_id,
             page=page,
             client=client,
+            tr_dataset=tr_dataset,
         )
     ).parsed

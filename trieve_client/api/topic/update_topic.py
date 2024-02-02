@@ -13,8 +13,10 @@ from ...types import Response
 def _get_kwargs(
     *,
     body: UpdateTopicData,
+    tr_dataset: str,
 ) -> Dict[str, Any]:
     headers: Dict[str, Any] = {}
+    headers["TR-Dataset"] = tr_dataset
 
     _kwargs: Dict[str, Any] = {
         "method": "put",
@@ -59,8 +61,9 @@ def _build_response(
 
 def sync_detailed(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: UpdateTopicData,
+    tr_dataset: str,
 ) -> Response[Union[Any, ErrorResponseBody]]:
     """update_topic
 
@@ -69,6 +72,7 @@ def sync_detailed(
     Update an existing chat topic. Currently, only the name of the topic can be updated.
 
     Args:
+        tr_dataset (str):
         body (UpdateTopicData):
 
     Raises:
@@ -81,6 +85,7 @@ def sync_detailed(
 
     kwargs = _get_kwargs(
         body=body,
+        tr_dataset=tr_dataset,
     )
 
     response = client.get_httpx_client().request(
@@ -92,8 +97,9 @@ def sync_detailed(
 
 def sync(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: UpdateTopicData,
+    tr_dataset: str,
 ) -> Optional[Union[Any, ErrorResponseBody]]:
     """update_topic
 
@@ -102,6 +108,7 @@ def sync(
     Update an existing chat topic. Currently, only the name of the topic can be updated.
 
     Args:
+        tr_dataset (str):
         body (UpdateTopicData):
 
     Raises:
@@ -115,13 +122,15 @@ def sync(
     return sync_detailed(
         client=client,
         body=body,
+        tr_dataset=tr_dataset,
     ).parsed
 
 
 async def asyncio_detailed(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: UpdateTopicData,
+    tr_dataset: str,
 ) -> Response[Union[Any, ErrorResponseBody]]:
     """update_topic
 
@@ -130,6 +139,7 @@ async def asyncio_detailed(
     Update an existing chat topic. Currently, only the name of the topic can be updated.
 
     Args:
+        tr_dataset (str):
         body (UpdateTopicData):
 
     Raises:
@@ -142,6 +152,7 @@ async def asyncio_detailed(
 
     kwargs = _get_kwargs(
         body=body,
+        tr_dataset=tr_dataset,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -151,8 +162,9 @@ async def asyncio_detailed(
 
 async def asyncio(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: UpdateTopicData,
+    tr_dataset: str,
 ) -> Optional[Union[Any, ErrorResponseBody]]:
     """update_topic
 
@@ -161,6 +173,7 @@ async def asyncio(
     Update an existing chat topic. Currently, only the name of the topic can be updated.
 
     Args:
+        tr_dataset (str):
         body (UpdateTopicData):
 
     Raises:
@@ -175,5 +188,6 @@ async def asyncio(
         await asyncio_detailed(
             client=client,
             body=body,
+            tr_dataset=tr_dataset,
         )
     ).parsed

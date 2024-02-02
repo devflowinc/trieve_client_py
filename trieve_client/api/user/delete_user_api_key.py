@@ -66,7 +66,7 @@ def _build_response(
 
 def sync_detailed(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: DeleteUserApiKeyRequest,
 ) -> Response[Union[ErrorResponseBody, List["ApiKeyDTO"]]]:
     """delete_user_api_key
@@ -99,7 +99,7 @@ def sync_detailed(
 
 def sync(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: DeleteUserApiKeyRequest,
 ) -> Optional[Union[ErrorResponseBody, List["ApiKeyDTO"]]]:
     """delete_user_api_key
@@ -127,7 +127,7 @@ def sync(
 
 async def asyncio_detailed(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: DeleteUserApiKeyRequest,
 ) -> Response[Union[ErrorResponseBody, List["ApiKeyDTO"]]]:
     """delete_user_api_key
@@ -158,7 +158,7 @@ async def asyncio_detailed(
 
 async def asyncio(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: DeleteUserApiKeyRequest,
 ) -> Optional[Union[ErrorResponseBody, List["ApiKeyDTO"]]]:
     """delete_user_api_key

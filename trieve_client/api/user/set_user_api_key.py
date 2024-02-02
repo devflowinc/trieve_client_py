@@ -61,7 +61,7 @@ def _build_response(
 
 def sync_detailed(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: SetUserApiKeyRequest,
 ) -> Response[Union[ErrorResponseBody, SetUserApiKeyResponse]]:
     """set_user_api_key
@@ -96,7 +96,7 @@ def sync_detailed(
 
 def sync(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: SetUserApiKeyRequest,
 ) -> Optional[Union[ErrorResponseBody, SetUserApiKeyResponse]]:
     """set_user_api_key
@@ -126,7 +126,7 @@ def sync(
 
 async def asyncio_detailed(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: SetUserApiKeyRequest,
 ) -> Response[Union[ErrorResponseBody, SetUserApiKeyResponse]]:
     """set_user_api_key
@@ -159,7 +159,7 @@ async def asyncio_detailed(
 
 async def asyncio(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: SetUserApiKeyRequest,
 ) -> Optional[Union[ErrorResponseBody, SetUserApiKeyResponse]]:
     """set_user_api_key

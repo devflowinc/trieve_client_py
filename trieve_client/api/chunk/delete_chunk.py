@@ -11,12 +11,18 @@ from ...types import Response
 
 def _get_kwargs(
     chunk_id: str,
+    *,
+    tr_dataset: str,
 ) -> Dict[str, Any]:
+    headers: Dict[str, Any] = {}
+    headers["TR-Dataset"] = tr_dataset
+
     _kwargs: Dict[str, Any] = {
         "method": "delete",
         "url": f"/api/chunk/{chunk_id}",
     }
 
+    _kwargs["headers"] = headers
     return _kwargs
 
 
@@ -50,7 +56,8 @@ def _build_response(
 def sync_detailed(
     chunk_id: str,
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
+    tr_dataset: str,
 ) -> Response[Union[Any, ErrorResponseBody]]:
     """delete_chunk
 
@@ -61,6 +68,7 @@ def sync_detailed(
 
     Args:
         chunk_id (str):
+        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -72,6 +80,7 @@ def sync_detailed(
 
     kwargs = _get_kwargs(
         chunk_id=chunk_id,
+        tr_dataset=tr_dataset,
     )
 
     response = client.get_httpx_client().request(
@@ -84,7 +93,8 @@ def sync_detailed(
 def sync(
     chunk_id: str,
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
+    tr_dataset: str,
 ) -> Optional[Union[Any, ErrorResponseBody]]:
     """delete_chunk
 
@@ -95,6 +105,7 @@ def sync(
 
     Args:
         chunk_id (str):
+        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -107,13 +118,15 @@ def sync(
     return sync_detailed(
         chunk_id=chunk_id,
         client=client,
+        tr_dataset=tr_dataset,
     ).parsed
 
 
 async def asyncio_detailed(
     chunk_id: str,
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
+    tr_dataset: str,
 ) -> Response[Union[Any, ErrorResponseBody]]:
     """delete_chunk
 
@@ -124,6 +137,7 @@ async def asyncio_detailed(
 
     Args:
         chunk_id (str):
+        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -135,6 +149,7 @@ async def asyncio_detailed(
 
     kwargs = _get_kwargs(
         chunk_id=chunk_id,
+        tr_dataset=tr_dataset,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -145,7 +160,8 @@ async def asyncio_detailed(
 async def asyncio(
     chunk_id: str,
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
+    tr_dataset: str,
 ) -> Optional[Union[Any, ErrorResponseBody]]:
     """delete_chunk
 
@@ -156,6 +172,7 @@ async def asyncio(
 
     Args:
         chunk_id (str):
+        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -169,5 +186,6 @@ async def asyncio(
         await asyncio_detailed(
             chunk_id=chunk_id,
             client=client,
+            tr_dataset=tr_dataset,
         )
     ).parsed

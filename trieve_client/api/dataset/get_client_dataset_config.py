@@ -10,12 +10,19 @@ from ...models.error_response_body import ErrorResponseBody
 from ...types import Response
 
 
-def _get_kwargs() -> Dict[str, Any]:
+def _get_kwargs(
+    *,
+    tr_dataset: str,
+) -> Dict[str, Any]:
+    headers: Dict[str, Any] = {}
+    headers["TR-Dataset"] = tr_dataset
+
     _kwargs: Dict[str, Any] = {
         "method": "get",
         "url": "/api/dataset/envs",
     }
 
+    _kwargs["headers"] = headers
     return _kwargs
 
 
@@ -49,13 +56,17 @@ def _build_response(
 
 def sync_detailed(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
+    tr_dataset: str,
 ) -> Response[Union[ClientDatasetConfiguration, ErrorResponseBody]]:
     """get_client_dataset_config
 
      get_client_dataset_config
 
     Get the client configuration for a dataset. Will use the TR-D
+
+    Args:
+        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -65,7 +76,9 @@ def sync_detailed(
         Response[Union[ClientDatasetConfiguration, ErrorResponseBody]]
     """
 
-    kwargs = _get_kwargs()
+    kwargs = _get_kwargs(
+        tr_dataset=tr_dataset,
+    )
 
     response = client.get_httpx_client().request(
         **kwargs,
@@ -76,13 +89,17 @@ def sync_detailed(
 
 def sync(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
+    tr_dataset: str,
 ) -> Optional[Union[ClientDatasetConfiguration, ErrorResponseBody]]:
     """get_client_dataset_config
 
      get_client_dataset_config
 
     Get the client configuration for a dataset. Will use the TR-D
+
+    Args:
+        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -94,18 +111,23 @@ def sync(
 
     return sync_detailed(
         client=client,
+        tr_dataset=tr_dataset,
     ).parsed
 
 
 async def asyncio_detailed(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
+    tr_dataset: str,
 ) -> Response[Union[ClientDatasetConfiguration, ErrorResponseBody]]:
     """get_client_dataset_config
 
      get_client_dataset_config
 
     Get the client configuration for a dataset. Will use the TR-D
+
+    Args:
+        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -115,7 +137,9 @@ async def asyncio_detailed(
         Response[Union[ClientDatasetConfiguration, ErrorResponseBody]]
     """
 
-    kwargs = _get_kwargs()
+    kwargs = _get_kwargs(
+        tr_dataset=tr_dataset,
+    )
 
     response = await client.get_async_httpx_client().request(**kwargs)
 
@@ -124,13 +148,17 @@ async def asyncio_detailed(
 
 async def asyncio(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
+    tr_dataset: str,
 ) -> Optional[Union[ClientDatasetConfiguration, ErrorResponseBody]]:
     """get_client_dataset_config
 
      get_client_dataset_config
 
     Get the client configuration for a dataset. Will use the TR-D
+
+    Args:
+        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -143,5 +171,6 @@ async def asyncio(
     return (
         await asyncio_detailed(
             client=client,
+            tr_dataset=tr_dataset,
         )
     ).parsed

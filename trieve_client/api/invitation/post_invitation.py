@@ -13,8 +13,10 @@ from ...types import Response
 def _get_kwargs(
     *,
     body: InvitationData,
+    tr_organization: str,
 ) -> Dict[str, Any]:
     headers: Dict[str, Any] = {}
+    headers["TR-Organization"] = tr_organization
 
     _kwargs: Dict[str, Any] = {
         "method": "post",
@@ -59,8 +61,9 @@ def _build_response(
 
 def sync_detailed(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: InvitationData,
+    tr_organization: str,
 ) -> Response[Union[Any, ErrorResponseBody]]:
     """send_invitation
 
@@ -71,6 +74,7 @@ def sync_detailed(
     their.
 
     Args:
+        tr_organization (str):
         body (InvitationData):
 
     Raises:
@@ -83,6 +87,7 @@ def sync_detailed(
 
     kwargs = _get_kwargs(
         body=body,
+        tr_organization=tr_organization,
     )
 
     response = client.get_httpx_client().request(
@@ -94,8 +99,9 @@ def sync_detailed(
 
 def sync(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: InvitationData,
+    tr_organization: str,
 ) -> Optional[Union[Any, ErrorResponseBody]]:
     """send_invitation
 
@@ -106,6 +112,7 @@ def sync(
     their.
 
     Args:
+        tr_organization (str):
         body (InvitationData):
 
     Raises:
@@ -119,13 +126,15 @@ def sync(
     return sync_detailed(
         client=client,
         body=body,
+        tr_organization=tr_organization,
     ).parsed
 
 
 async def asyncio_detailed(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: InvitationData,
+    tr_organization: str,
 ) -> Response[Union[Any, ErrorResponseBody]]:
     """send_invitation
 
@@ -136,6 +145,7 @@ async def asyncio_detailed(
     their.
 
     Args:
+        tr_organization (str):
         body (InvitationData):
 
     Raises:
@@ -148,6 +158,7 @@ async def asyncio_detailed(
 
     kwargs = _get_kwargs(
         body=body,
+        tr_organization=tr_organization,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -157,8 +168,9 @@ async def asyncio_detailed(
 
 async def asyncio(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: InvitationData,
+    tr_organization: str,
 ) -> Optional[Union[Any, ErrorResponseBody]]:
     """send_invitation
 
@@ -169,6 +181,7 @@ async def asyncio(
     their.
 
     Args:
+        tr_organization (str):
         body (InvitationData):
 
     Raises:
@@ -183,5 +196,6 @@ async def asyncio(
         await asyncio_detailed(
             client=client,
             body=body,
+            tr_organization=tr_organization,
         )
     ).parsed

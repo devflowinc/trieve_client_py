@@ -12,12 +12,18 @@ from ...types import Response
 
 def _get_kwargs(
     tracking_id: str,
+    *,
+    tr_dataset: str,
 ) -> Dict[str, Any]:
+    headers: Dict[str, Any] = {}
+    headers["TR-Dataset"] = tr_dataset
+
     _kwargs: Dict[str, Any] = {
         "method": "get",
         "url": f"/api/chunk/tracking_id/{tracking_id}",
     }
 
+    _kwargs["headers"] = headers
     return _kwargs
 
 
@@ -52,7 +58,8 @@ def _build_response(
 def sync_detailed(
     tracking_id: str,
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
+    tr_dataset: str,
 ) -> Response[Union[ChunkMetadata, ErrorResponseBody]]:
     """get_chunk_by_tracking_id
 
@@ -63,6 +70,7 @@ def sync_detailed(
 
     Args:
         tracking_id (str):
+        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -74,6 +82,7 @@ def sync_detailed(
 
     kwargs = _get_kwargs(
         tracking_id=tracking_id,
+        tr_dataset=tr_dataset,
     )
 
     response = client.get_httpx_client().request(
@@ -86,7 +95,8 @@ def sync_detailed(
 def sync(
     tracking_id: str,
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
+    tr_dataset: str,
 ) -> Optional[Union[ChunkMetadata, ErrorResponseBody]]:
     """get_chunk_by_tracking_id
 
@@ -97,6 +107,7 @@ def sync(
 
     Args:
         tracking_id (str):
+        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -109,13 +120,15 @@ def sync(
     return sync_detailed(
         tracking_id=tracking_id,
         client=client,
+        tr_dataset=tr_dataset,
     ).parsed
 
 
 async def asyncio_detailed(
     tracking_id: str,
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
+    tr_dataset: str,
 ) -> Response[Union[ChunkMetadata, ErrorResponseBody]]:
     """get_chunk_by_tracking_id
 
@@ -126,6 +139,7 @@ async def asyncio_detailed(
 
     Args:
         tracking_id (str):
+        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -137,6 +151,7 @@ async def asyncio_detailed(
 
     kwargs = _get_kwargs(
         tracking_id=tracking_id,
+        tr_dataset=tr_dataset,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -147,7 +162,8 @@ async def asyncio_detailed(
 async def asyncio(
     tracking_id: str,
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
+    tr_dataset: str,
 ) -> Optional[Union[ChunkMetadata, ErrorResponseBody]]:
     """get_chunk_by_tracking_id
 
@@ -158,6 +174,7 @@ async def asyncio(
 
     Args:
         tracking_id (str):
+        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -171,5 +188,6 @@ async def asyncio(
         await asyncio_detailed(
             tracking_id=tracking_id,
             client=client,
+            tr_dataset=tr_dataset,
         )
     ).parsed

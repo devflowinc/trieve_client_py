@@ -12,12 +12,18 @@ from ...types import Response
 
 def _get_kwargs(
     user_id: str,
+    *,
+    tr_dataset: str,
 ) -> Dict[str, Any]:
+    headers: Dict[str, Any] = {}
+    headers["TR-Dataset"] = tr_dataset
+
     _kwargs: Dict[str, Any] = {
         "method": "get",
         "url": f"/api/user/files/{user_id}",
     }
 
+    _kwargs["headers"] = headers
     return _kwargs
 
 
@@ -57,7 +63,8 @@ def _build_response(
 def sync_detailed(
     user_id: str,
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
+    tr_dataset: str,
 ) -> Response[Union[ErrorResponseBody, List["File"]]]:
     """get_user_files
 
@@ -67,6 +74,7 @@ def sync_detailed(
 
     Args:
         user_id (str):
+        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -78,6 +86,7 @@ def sync_detailed(
 
     kwargs = _get_kwargs(
         user_id=user_id,
+        tr_dataset=tr_dataset,
     )
 
     response = client.get_httpx_client().request(
@@ -90,7 +99,8 @@ def sync_detailed(
 def sync(
     user_id: str,
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
+    tr_dataset: str,
 ) -> Optional[Union[ErrorResponseBody, List["File"]]]:
     """get_user_files
 
@@ -100,6 +110,7 @@ def sync(
 
     Args:
         user_id (str):
+        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -112,13 +123,15 @@ def sync(
     return sync_detailed(
         user_id=user_id,
         client=client,
+        tr_dataset=tr_dataset,
     ).parsed
 
 
 async def asyncio_detailed(
     user_id: str,
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
+    tr_dataset: str,
 ) -> Response[Union[ErrorResponseBody, List["File"]]]:
     """get_user_files
 
@@ -128,6 +141,7 @@ async def asyncio_detailed(
 
     Args:
         user_id (str):
+        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -139,6 +153,7 @@ async def asyncio_detailed(
 
     kwargs = _get_kwargs(
         user_id=user_id,
+        tr_dataset=tr_dataset,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -149,7 +164,8 @@ async def asyncio_detailed(
 async def asyncio(
     user_id: str,
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
+    tr_dataset: str,
 ) -> Optional[Union[ErrorResponseBody, List["File"]]]:
     """get_user_files
 
@@ -159,6 +175,7 @@ async def asyncio(
 
     Args:
         user_id (str):
+        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -172,5 +189,6 @@ async def asyncio(
         await asyncio_detailed(
             user_id=user_id,
             client=client,
+            tr_dataset=tr_dataset,
         )
     ).parsed

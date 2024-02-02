@@ -12,12 +12,21 @@ from ...types import Response
 
 def _get_kwargs(
     dataset_id: str,
+    *,
+    tr_organization: str,
+    tr_dataset: str,
 ) -> Dict[str, Any]:
+    headers: Dict[str, Any] = {}
+    headers["TR-Organization"] = tr_organization
+
+    headers["TR-Dataset"] = tr_dataset
+
     _kwargs: Dict[str, Any] = {
         "method": "get",
         "url": f"/api/dataset/{dataset_id}",
     }
 
+    _kwargs["headers"] = headers
     return _kwargs
 
 
@@ -52,7 +61,9 @@ def _build_response(
 def sync_detailed(
     dataset_id: str,
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
+    tr_organization: str,
+    tr_dataset: str,
 ) -> Response[Union[Dataset, ErrorResponseBody]]:
     """get_dataset
 
@@ -63,6 +74,8 @@ def sync_detailed(
 
     Args:
         dataset_id (str):
+        tr_organization (str):
+        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -74,6 +87,8 @@ def sync_detailed(
 
     kwargs = _get_kwargs(
         dataset_id=dataset_id,
+        tr_organization=tr_organization,
+        tr_dataset=tr_dataset,
     )
 
     response = client.get_httpx_client().request(
@@ -86,7 +101,9 @@ def sync_detailed(
 def sync(
     dataset_id: str,
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
+    tr_organization: str,
+    tr_dataset: str,
 ) -> Optional[Union[Dataset, ErrorResponseBody]]:
     """get_dataset
 
@@ -97,6 +114,8 @@ def sync(
 
     Args:
         dataset_id (str):
+        tr_organization (str):
+        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -109,13 +128,17 @@ def sync(
     return sync_detailed(
         dataset_id=dataset_id,
         client=client,
+        tr_organization=tr_organization,
+        tr_dataset=tr_dataset,
     ).parsed
 
 
 async def asyncio_detailed(
     dataset_id: str,
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
+    tr_organization: str,
+    tr_dataset: str,
 ) -> Response[Union[Dataset, ErrorResponseBody]]:
     """get_dataset
 
@@ -126,6 +149,8 @@ async def asyncio_detailed(
 
     Args:
         dataset_id (str):
+        tr_organization (str):
+        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -137,6 +162,8 @@ async def asyncio_detailed(
 
     kwargs = _get_kwargs(
         dataset_id=dataset_id,
+        tr_organization=tr_organization,
+        tr_dataset=tr_dataset,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -147,7 +174,9 @@ async def asyncio_detailed(
 async def asyncio(
     dataset_id: str,
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
+    tr_organization: str,
+    tr_dataset: str,
 ) -> Optional[Union[Dataset, ErrorResponseBody]]:
     """get_dataset
 
@@ -158,6 +187,8 @@ async def asyncio(
 
     Args:
         dataset_id (str):
+        tr_organization (str):
+        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -171,5 +202,7 @@ async def asyncio(
         await asyncio_detailed(
             dataset_id=dataset_id,
             client=client,
+            tr_organization=tr_organization,
+            tr_dataset=tr_dataset,
         )
     ).parsed

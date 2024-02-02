@@ -11,12 +11,18 @@ from ...types import Response
 
 def _get_kwargs(
     file_id: str,
+    *,
+    tr_dataset: str,
 ) -> Dict[str, Any]:
+    headers: Dict[str, Any] = {}
+    headers["TR-Dataset"] = tr_dataset
+
     _kwargs: Dict[str, Any] = {
         "method": "delete",
         "url": f"/api/file/{file_id}",
     }
 
+    _kwargs["headers"] = headers
     return _kwargs
 
 
@@ -50,7 +56,8 @@ def _build_response(
 def sync_detailed(
     file_id: str,
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
+    tr_dataset: str,
 ) -> Response[Union[Any, ErrorResponseBody]]:
     """delete_file
 
@@ -62,6 +69,7 @@ def sync_detailed(
 
     Args:
         file_id (str):
+        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -73,6 +81,7 @@ def sync_detailed(
 
     kwargs = _get_kwargs(
         file_id=file_id,
+        tr_dataset=tr_dataset,
     )
 
     response = client.get_httpx_client().request(
@@ -85,7 +94,8 @@ def sync_detailed(
 def sync(
     file_id: str,
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
+    tr_dataset: str,
 ) -> Optional[Union[Any, ErrorResponseBody]]:
     """delete_file
 
@@ -97,6 +107,7 @@ def sync(
 
     Args:
         file_id (str):
+        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -109,13 +120,15 @@ def sync(
     return sync_detailed(
         file_id=file_id,
         client=client,
+        tr_dataset=tr_dataset,
     ).parsed
 
 
 async def asyncio_detailed(
     file_id: str,
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
+    tr_dataset: str,
 ) -> Response[Union[Any, ErrorResponseBody]]:
     """delete_file
 
@@ -127,6 +140,7 @@ async def asyncio_detailed(
 
     Args:
         file_id (str):
+        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -138,6 +152,7 @@ async def asyncio_detailed(
 
     kwargs = _get_kwargs(
         file_id=file_id,
+        tr_dataset=tr_dataset,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -148,7 +163,8 @@ async def asyncio_detailed(
 async def asyncio(
     file_id: str,
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
+    tr_dataset: str,
 ) -> Optional[Union[Any, ErrorResponseBody]]:
     """delete_file
 
@@ -160,6 +176,7 @@ async def asyncio(
 
     Args:
         file_id (str):
+        tr_dataset (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -173,5 +190,6 @@ async def asyncio(
         await asyncio_detailed(
             file_id=file_id,
             client=client,
+            tr_dataset=tr_dataset,
         )
     ).parsed

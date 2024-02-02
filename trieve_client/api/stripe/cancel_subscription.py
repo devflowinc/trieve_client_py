@@ -11,12 +11,18 @@ from ...types import Response
 
 def _get_kwargs(
     subscription_id: str,
+    *,
+    tr_organization: str,
 ) -> Dict[str, Any]:
+    headers: Dict[str, Any] = {}
+    headers["TR-Organization"] = tr_organization
+
     _kwargs: Dict[str, Any] = {
         "method": "delete",
         "url": f"/api/stripe/subscription/{subscription_id}",
     }
 
+    _kwargs["headers"] = headers
     return _kwargs
 
 
@@ -50,11 +56,13 @@ def _build_response(
 def sync_detailed(
     subscription_id: str,
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
+    tr_organization: str,
 ) -> Response[Union[Any, ErrorResponseBody]]:
     """
     Args:
         subscription_id (str):
+        tr_organization (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -66,6 +74,7 @@ def sync_detailed(
 
     kwargs = _get_kwargs(
         subscription_id=subscription_id,
+        tr_organization=tr_organization,
     )
 
     response = client.get_httpx_client().request(
@@ -78,11 +87,13 @@ def sync_detailed(
 def sync(
     subscription_id: str,
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
+    tr_organization: str,
 ) -> Optional[Union[Any, ErrorResponseBody]]:
     """
     Args:
         subscription_id (str):
+        tr_organization (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -95,17 +106,20 @@ def sync(
     return sync_detailed(
         subscription_id=subscription_id,
         client=client,
+        tr_organization=tr_organization,
     ).parsed
 
 
 async def asyncio_detailed(
     subscription_id: str,
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
+    tr_organization: str,
 ) -> Response[Union[Any, ErrorResponseBody]]:
     """
     Args:
         subscription_id (str):
+        tr_organization (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -117,6 +131,7 @@ async def asyncio_detailed(
 
     kwargs = _get_kwargs(
         subscription_id=subscription_id,
+        tr_organization=tr_organization,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -127,11 +142,13 @@ async def asyncio_detailed(
 async def asyncio(
     subscription_id: str,
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
+    tr_organization: str,
 ) -> Optional[Union[Any, ErrorResponseBody]]:
     """
     Args:
         subscription_id (str):
+        tr_organization (str):
 
     Raises:
         errors.UnexpectedStatus: If the server returns an undocumented status code and Client.raise_on_unexpected_status is True.
@@ -145,5 +162,6 @@ async def asyncio(
         await asyncio_detailed(
             subscription_id=subscription_id,
             client=client,
+            tr_organization=tr_organization,
         )
     ).parsed

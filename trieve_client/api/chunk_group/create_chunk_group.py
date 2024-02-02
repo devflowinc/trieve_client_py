@@ -14,8 +14,10 @@ from ...types import Response
 def _get_kwargs(
     *,
     body: CreateChunkGroupData,
+    tr_dataset: str,
 ) -> Dict[str, Any]:
     headers: Dict[str, Any] = {}
+    headers["TR-Dataset"] = tr_dataset
 
     _kwargs: Dict[str, Any] = {
         "method": "post",
@@ -61,8 +63,9 @@ def _build_response(
 
 def sync_detailed(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: CreateChunkGroupData,
+    tr_dataset: str,
 ) -> Response[Union[ChunkGroup, ErrorResponseBody]]:
     """create_chunk_group
 
@@ -71,6 +74,7 @@ def sync_detailed(
     Create a new chunk_group. Think of this as analogous to a bookmark folder.
 
     Args:
+        tr_dataset (str):
         body (CreateChunkGroupData):
 
     Raises:
@@ -83,6 +87,7 @@ def sync_detailed(
 
     kwargs = _get_kwargs(
         body=body,
+        tr_dataset=tr_dataset,
     )
 
     response = client.get_httpx_client().request(
@@ -94,8 +99,9 @@ def sync_detailed(
 
 def sync(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: CreateChunkGroupData,
+    tr_dataset: str,
 ) -> Optional[Union[ChunkGroup, ErrorResponseBody]]:
     """create_chunk_group
 
@@ -104,6 +110,7 @@ def sync(
     Create a new chunk_group. Think of this as analogous to a bookmark folder.
 
     Args:
+        tr_dataset (str):
         body (CreateChunkGroupData):
 
     Raises:
@@ -117,13 +124,15 @@ def sync(
     return sync_detailed(
         client=client,
         body=body,
+        tr_dataset=tr_dataset,
     ).parsed
 
 
 async def asyncio_detailed(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: CreateChunkGroupData,
+    tr_dataset: str,
 ) -> Response[Union[ChunkGroup, ErrorResponseBody]]:
     """create_chunk_group
 
@@ -132,6 +141,7 @@ async def asyncio_detailed(
     Create a new chunk_group. Think of this as analogous to a bookmark folder.
 
     Args:
+        tr_dataset (str):
         body (CreateChunkGroupData):
 
     Raises:
@@ -144,6 +154,7 @@ async def asyncio_detailed(
 
     kwargs = _get_kwargs(
         body=body,
+        tr_dataset=tr_dataset,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -153,8 +164,9 @@ async def asyncio_detailed(
 
 async def asyncio(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: CreateChunkGroupData,
+    tr_dataset: str,
 ) -> Optional[Union[ChunkGroup, ErrorResponseBody]]:
     """create_chunk_group
 
@@ -163,6 +175,7 @@ async def asyncio(
     Create a new chunk_group. Think of this as analogous to a bookmark folder.
 
     Args:
+        tr_dataset (str):
         body (CreateChunkGroupData):
 
     Raises:
@@ -177,5 +190,6 @@ async def asyncio(
         await asyncio_detailed(
             client=client,
             body=body,
+            tr_dataset=tr_dataset,
         )
     ).parsed

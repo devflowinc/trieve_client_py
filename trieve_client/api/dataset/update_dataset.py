@@ -14,8 +14,10 @@ from ...types import Response
 def _get_kwargs(
     *,
     body: UpdateDatasetRequest,
+    tr_organization: str,
 ) -> Dict[str, Any]:
     headers: Dict[str, Any] = {}
+    headers["TR-Organization"] = tr_organization
 
     _kwargs: Dict[str, Any] = {
         "method": "put",
@@ -61,8 +63,9 @@ def _build_response(
 
 def sync_detailed(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: UpdateDatasetRequest,
+    tr_organization: str,
 ) -> Response[Union[Dataset, ErrorResponseBody]]:
     """update_dataset
 
@@ -71,6 +74,7 @@ def sync_detailed(
     Update a dataset. The auth'ed user must be an owner of the organization to update a dataset.
 
     Args:
+        tr_organization (str):
         body (UpdateDatasetRequest):
 
     Raises:
@@ -83,6 +87,7 @@ def sync_detailed(
 
     kwargs = _get_kwargs(
         body=body,
+        tr_organization=tr_organization,
     )
 
     response = client.get_httpx_client().request(
@@ -94,8 +99,9 @@ def sync_detailed(
 
 def sync(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: UpdateDatasetRequest,
+    tr_organization: str,
 ) -> Optional[Union[Dataset, ErrorResponseBody]]:
     """update_dataset
 
@@ -104,6 +110,7 @@ def sync(
     Update a dataset. The auth'ed user must be an owner of the organization to update a dataset.
 
     Args:
+        tr_organization (str):
         body (UpdateDatasetRequest):
 
     Raises:
@@ -117,13 +124,15 @@ def sync(
     return sync_detailed(
         client=client,
         body=body,
+        tr_organization=tr_organization,
     ).parsed
 
 
 async def asyncio_detailed(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: UpdateDatasetRequest,
+    tr_organization: str,
 ) -> Response[Union[Dataset, ErrorResponseBody]]:
     """update_dataset
 
@@ -132,6 +141,7 @@ async def asyncio_detailed(
     Update a dataset. The auth'ed user must be an owner of the organization to update a dataset.
 
     Args:
+        tr_organization (str):
         body (UpdateDatasetRequest):
 
     Raises:
@@ -144,6 +154,7 @@ async def asyncio_detailed(
 
     kwargs = _get_kwargs(
         body=body,
+        tr_organization=tr_organization,
     )
 
     response = await client.get_async_httpx_client().request(**kwargs)
@@ -153,8 +164,9 @@ async def asyncio_detailed(
 
 async def asyncio(
     *,
-    client: Union[AuthenticatedClient, Client],
+    client: AuthenticatedClient,
     body: UpdateDatasetRequest,
+    tr_organization: str,
 ) -> Optional[Union[Dataset, ErrorResponseBody]]:
     """update_dataset
 
@@ -163,6 +175,7 @@ async def asyncio(
     Update a dataset. The auth'ed user must be an owner of the organization to update a dataset.
 
     Args:
+        tr_organization (str):
         body (UpdateDatasetRequest):
 
     Raises:
@@ -177,5 +190,6 @@ async def asyncio(
         await asyncio_detailed(
             client=client,
             body=body,
+            tr_organization=tr_organization,
         )
     ).parsed
