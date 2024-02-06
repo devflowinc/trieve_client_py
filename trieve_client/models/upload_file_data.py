@@ -27,9 +27,9 @@ class UploadFileData:
         metadata (Union[Unset, Any]): Metadata is a JSON object which can be used to filter chunks. This is useful for
             when you want to filter chunks by arbitrary metadata. Unlike with tag filtering, there is a performance hit for
             filtering on metadata. Will be passed down to the file's chunks.
-        tag_set (Union[None, Unset, str]): Tag set is a comma separated list of tags which will be passed down to the
-            chunks made from the file. Tags are used to filter chunks when searching. HNSW indices are created for each tag
-            such that there is no performance loss when filtering on them.
+        tag_set (Union[List[str], None, Unset]): Tag set is a comma separated list of tags which will be passed down to
+            the chunks made from the file. Tags are used to filter chunks when searching. HNSW indices are created for each
+            tag such that there is no performance loss when filtering on them.
         time_stamp (Union[None, Unset, str]): Time stamp should be an ISO 8601 combined date and time without timezone.
             Time_stamp is used for time window filtering and recency-biasing search results. Will be passed down to the
             file's chunks.
@@ -42,7 +42,7 @@ class UploadFileData:
     description: Union[None, Unset, str] = UNSET
     link: Union[None, Unset, str] = UNSET
     metadata: Union[Unset, Any] = UNSET
-    tag_set: Union[None, Unset, str] = UNSET
+    tag_set: Union[List[str], None, Unset] = UNSET
     time_stamp: Union[None, Unset, str] = UNSET
     additional_properties: Dict[str, Any] = _attrs_field(init=False, factory=dict)
 
@@ -73,9 +73,12 @@ class UploadFileData:
 
         metadata = self.metadata
 
-        tag_set: Union[None, Unset, str]
+        tag_set: Union[List[str], None, Unset]
         if isinstance(self.tag_set, Unset):
             tag_set = UNSET
+        elif isinstance(self.tag_set, list):
+            tag_set = self.tag_set
+
         else:
             tag_set = self.tag_set
 
@@ -147,12 +150,20 @@ class UploadFileData:
 
         metadata = d.pop("metadata", UNSET)
 
-        def _parse_tag_set(data: object) -> Union[None, Unset, str]:
+        def _parse_tag_set(data: object) -> Union[List[str], None, Unset]:
             if data is None:
                 return data
             if isinstance(data, Unset):
                 return data
-            return cast(Union[None, Unset, str], data)
+            try:
+                if not isinstance(data, list):
+                    raise TypeError()
+                tag_set_type_0 = cast(List[str], data)
+
+                return tag_set_type_0
+            except:  # noqa: E722
+                pass
+            return cast(Union[List[str], None, Unset], data)
 
         tag_set = _parse_tag_set(d.pop("tag_set", UNSET))
 

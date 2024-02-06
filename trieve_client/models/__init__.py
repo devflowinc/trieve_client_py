@@ -44,6 +44,7 @@ from .get_direct_payment_link_data import GetDirectPaymentLinkData
 from .get_groups_for_chunks_data import GetGroupsForChunksData
 from .get_user_with_chunks_data import GetUserWithChunksData
 from .group_data import GroupData
+from .group_score_chunk_dto import GroupScoreChunkDTO
 from .invitation_data import InvitationData
 from .message import Message
 from .organization import Organization
@@ -55,11 +56,10 @@ from .return_created_chunk import ReturnCreatedChunk
 from .score_chunk_dto import ScoreChunkDTO
 from .search_chunk_data import SearchChunkData
 from .search_chunk_data_time_range_type_0_item import SearchChunkDataTimeRangeType0Item
-from .search_chunk_data_weights_type_0_item import SearchChunkDataWeightsType0Item
 from .search_chunk_query_response_body import SearchChunkQueryResponseBody
 from .search_groups_data import SearchGroupsData
-from .search_groups_data_weights_type_0_item import SearchGroupsDataWeightsType0Item
 from .search_groups_result import SearchGroupsResult
+from .search_over_groups_response_body import SearchOverGroupsResponseBody
 from .set_user_api_key_request import SetUserApiKeyRequest
 from .set_user_api_key_response import SetUserApiKeyResponse
 from .slim_group import SlimGroup
@@ -129,6 +129,7 @@ __all__ = (
     "GetGroupsForChunksData",
     "GetUserWithChunksData",
     "GroupData",
+    "GroupScoreChunkDTO",
     "InvitationData",
     "Message",
     "Organization",
@@ -140,11 +141,10 @@ __all__ = (
     "ScoreChunkDTO",
     "SearchChunkData",
     "SearchChunkDataTimeRangeType0Item",
-    "SearchChunkDataWeightsType0Item",
     "SearchChunkQueryResponseBody",
     "SearchGroupsData",
-    "SearchGroupsDataWeightsType0Item",
     "SearchGroupsResult",
+    "SearchOverGroupsResponseBody",
     "SetUserApiKeyRequest",
     "SetUserApiKeyResponse",
     "SlimGroup",

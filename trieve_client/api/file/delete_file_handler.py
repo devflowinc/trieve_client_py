@@ -6,20 +6,33 @@ import httpx
 from ... import errors
 from ...client import AuthenticatedClient, Client
 from ...models.error_response_body import ErrorResponseBody
-from ...types import Response
+from ...types import UNSET, Response, Unset
 
 
 def _get_kwargs(
     file_id: str,
     *,
+    delete_chunks: Union[None, Unset, bool] = UNSET,
     tr_dataset: str,
 ) -> Dict[str, Any]:
     headers: Dict[str, Any] = {}
     headers["TR-Dataset"] = tr_dataset
 
+    params: Dict[str, Any] = {}
+
+    json_delete_chunks: Union[None, Unset, bool]
+    if isinstance(delete_chunks, Unset):
+        json_delete_chunks = UNSET
+    else:
+        json_delete_chunks = delete_chunks
+    params["delete_chunks"] = json_delete_chunks
+
+    params = {k: v for k, v in params.items() if v is not UNSET and v is not None}
+
     _kwargs: Dict[str, Any] = {
         "method": "delete",
         "url": f"/api/file/{file_id}",
+        "params": params,
     }
 
     _kwargs["headers"] = headers
@@ -57,6 +70,7 @@ def sync_detailed(
     file_id: str,
     *,
     client: AuthenticatedClient,
+    delete_chunks: Union[None, Unset, bool] = UNSET,
     tr_dataset: str,
 ) -> Response[Union[Any, ErrorResponseBody]]:
     """delete_file
@@ -69,6 +83,7 @@ def sync_detailed(
 
     Args:
         file_id (str):
+        delete_chunks (Union[None, Unset, bool]):
         tr_dataset (str):
 
     Raises:
@@ -81,6 +96,7 @@ def sync_detailed(
 
     kwargs = _get_kwargs(
         file_id=file_id,
+        delete_chunks=delete_chunks,
         tr_dataset=tr_dataset,
     )
 
@@ -95,6 +111,7 @@ def sync(
     file_id: str,
     *,
     client: AuthenticatedClient,
+    delete_chunks: Union[None, Unset, bool] = UNSET,
     tr_dataset: str,
 ) -> Optional[Union[Any, ErrorResponseBody]]:
     """delete_file
@@ -107,6 +124,7 @@ def sync(
 
     Args:
         file_id (str):
+        delete_chunks (Union[None, Unset, bool]):
         tr_dataset (str):
 
     Raises:
@@ -120,6 +138,7 @@ def sync(
     return sync_detailed(
         file_id=file_id,
         client=client,
+        delete_chunks=delete_chunks,
         tr_dataset=tr_dataset,
     ).parsed
 
@@ -128,6 +147,7 @@ async def asyncio_detailed(
     file_id: str,
     *,
     client: AuthenticatedClient,
+    delete_chunks: Union[None, Unset, bool] = UNSET,
     tr_dataset: str,
 ) -> Response[Union[Any, ErrorResponseBody]]:
     """delete_file
@@ -140,6 +160,7 @@ async def asyncio_detailed(
 
     Args:
         file_id (str):
+        delete_chunks (Union[None, Unset, bool]):
         tr_dataset (str):
 
     Raises:
@@ -152,6 +173,7 @@ async def asyncio_detailed(
 
     kwargs = _get_kwargs(
         file_id=file_id,
+        delete_chunks=delete_chunks,
         tr_dataset=tr_dataset,
     )
 
@@ -164,6 +186,7 @@ async def asyncio(
     file_id: str,
     *,
     client: AuthenticatedClient,
+    delete_chunks: Union[None, Unset, bool] = UNSET,
     tr_dataset: str,
 ) -> Optional[Union[Any, ErrorResponseBody]]:
     """delete_file
@@ -176,6 +199,7 @@ async def asyncio(
 
     Args:
         file_id (str):
+        delete_chunks (Union[None, Unset, bool]):
         tr_dataset (str):
 
     Raises:
@@ -190,6 +214,7 @@ async def asyncio(
         await asyncio_detailed(
             file_id=file_id,
             client=client,
+            delete_chunks=delete_chunks,
             tr_dataset=tr_dataset,
         )
     ).parsed

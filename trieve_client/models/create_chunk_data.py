@@ -18,19 +18,21 @@ class CreateChunkData:
         chunk_vector (Union[List[float], None, Unset]): Chunk_vector is a vector of floats which can be used instead of
             generating a new embedding. This is useful for when you are using a pre-embedded dataset. If this is not
             provided, the innerText of the chunk_html will be used to create the embedding.
-        file_uuid (Union[None, Unset, str]): File_uuid is the uuid of the file that the chunk is associated with. This
-            is used to associate chunks with files. This is useful for when you want to delete a file and all of its
-            associated chunks.
-        group_id (Union[None, Unset, str]): Group is the id of the group that the chunk should be placed into. This is
-            useful for when you want to create a chunk and add it to a group in one request.
+        file_id (Union[None, Unset, str]): File_uuid is the uuid of the file that the chunk is associated with. This is
+            used to associate chunks with files. This is useful for when you want to delete a file and all of its associated
+            chunks.
+        group_ids (Union[List[str], None, Unset]): Group ids are the ids of the groups that the chunk should be placed
+            into. This is useful for when you want to create a chunk and add it to a group or multiple groups in one
+            request. Necessary because this route queues the chunk for ingestion and the chunk may not exist yet immediatley
+            after response.
         link (Union[None, Unset, str]): Link to the chunk. This can also be any string. Frequently, this is a link to
             the source of the chunk. The link value will not affect the embedding creation.
         metadata (Union[Unset, Any]): Metadata is a JSON object which can be used to filter chunks. This is useful for
             when you want to filter chunks by arbitrary metadata. Unlike with tag filtering, there is a performance hit for
             filtering on metadata.
-        tag_set (Union[None, Unset, str]): Tag set is a comma separated list of tags. This can be used to filter chunks
-            by tag. Unlike with metadata filtering, HNSW indices will exist for each tag such that there is not a
-            performance hit for filtering on them.
+        tag_set (Union[List[str], None, Unset]): Tag set is a list of tags. This can be used to filter chunks by tag.
+            Unlike with metadata filtering, HNSW indices will exist for each tag such that there is not a performance hit
+            for filtering on them.
         time_stamp (Union[None, Unset, str]): Time_stamp should be an ISO 8601 combined date and time without timezone.
             It is used for time window filtering and recency-biasing search results.
         tracking_id (Union[None, Unset, str]): Tracking_id is a string which can be used to identify a chunk. This is
@@ -43,11 +45,11 @@ class CreateChunkData:
 
     chunk_html: Union[None, Unset, str] = UNSET
     chunk_vector: Union[List[float], None, Unset] = UNSET
-    file_uuid: Union[None, Unset, str] = UNSET
-    group_id: Union[None, Unset, str] = UNSET
+    file_id: Union[None, Unset, str] = UNSET
+    group_ids: Union[List[str], None, Unset] = UNSET
     link: Union[None, Unset, str] = UNSET
     metadata: Union[Unset, Any] = UNSET
-    tag_set: Union[None, Unset, str] = UNSET
+    tag_set: Union[List[str], None, Unset] = UNSET
     time_stamp: Union[None, Unset, str] = UNSET
     tracking_id: Union[None, Unset, str] = UNSET
     weight: Union[None, Unset, float] = UNSET
@@ -69,17 +71,20 @@ class CreateChunkData:
         else:
             chunk_vector = self.chunk_vector
 
-        file_uuid: Union[None, Unset, str]
-        if isinstance(self.file_uuid, Unset):
-            file_uuid = UNSET
+        file_id: Union[None, Unset, str]
+        if isinstance(self.file_id, Unset):
+            file_id = UNSET
         else:
-            file_uuid = self.file_uuid
+            file_id = self.file_id
 
-        group_id: Union[None, Unset, str]
-        if isinstance(self.group_id, Unset):
-            group_id = UNSET
+        group_ids: Union[List[str], None, Unset]
+        if isinstance(self.group_ids, Unset):
+            group_ids = UNSET
+        elif isinstance(self.group_ids, list):
+            group_ids = self.group_ids
+
         else:
-            group_id = self.group_id
+            group_ids = self.group_ids
 
         link: Union[None, Unset, str]
         if isinstance(self.link, Unset):
@@ -89,9 +94,12 @@ class CreateChunkData:
 
         metadata = self.metadata
 
-        tag_set: Union[None, Unset, str]
+        tag_set: Union[List[str], None, Unset]
         if isinstance(self.tag_set, Unset):
             tag_set = UNSET
+        elif isinstance(self.tag_set, list):
+            tag_set = self.tag_set
+
         else:
             tag_set = self.tag_set
 
@@ -120,10 +128,10 @@ class CreateChunkData:
             field_dict["chunk_html"] = chunk_html
         if chunk_vector is not UNSET:
             field_dict["chunk_vector"] = chunk_vector
-        if file_uuid is not UNSET:
-            field_dict["file_uuid"] = file_uuid
-        if group_id is not UNSET:
-            field_dict["group_id"] = group_id
+        if file_id is not UNSET:
+            field_dict["file_id"] = file_id
+        if group_ids is not UNSET:
+            field_dict["group_ids"] = group_ids
         if link is not UNSET:
             field_dict["link"] = link
         if metadata is not UNSET:
@@ -169,23 +177,31 @@ class CreateChunkData:
 
         chunk_vector = _parse_chunk_vector(d.pop("chunk_vector", UNSET))
 
-        def _parse_file_uuid(data: object) -> Union[None, Unset, str]:
+        def _parse_file_id(data: object) -> Union[None, Unset, str]:
             if data is None:
                 return data
             if isinstance(data, Unset):
                 return data
             return cast(Union[None, Unset, str], data)
 
-        file_uuid = _parse_file_uuid(d.pop("file_uuid", UNSET))
+        file_id = _parse_file_id(d.pop("file_id", UNSET))
 
-        def _parse_group_id(data: object) -> Union[None, Unset, str]:
+        def _parse_group_ids(data: object) -> Union[List[str], None, Unset]:
             if data is None:
                 return data
             if isinstance(data, Unset):
                 return data
-            return cast(Union[None, Unset, str], data)
+            try:
+                if not isinstance(data, list):
+                    raise TypeError()
+                group_ids_type_0 = cast(List[str], data)
 
-        group_id = _parse_group_id(d.pop("group_id", UNSET))
+                return group_ids_type_0
+            except:  # noqa: E722
+                pass
+            return cast(Union[List[str], None, Unset], data)
+
+        group_ids = _parse_group_ids(d.pop("group_ids", UNSET))
 
         def _parse_link(data: object) -> Union[None, Unset, str]:
             if data is None:
@@ -198,12 +214,20 @@ class CreateChunkData:
 
         metadata = d.pop("metadata", UNSET)
 
-        def _parse_tag_set(data: object) -> Union[None, Unset, str]:
+        def _parse_tag_set(data: object) -> Union[List[str], None, Unset]:
             if data is None:
                 return data
             if isinstance(data, Unset):
                 return data
-            return cast(Union[None, Unset, str], data)
+            try:
+                if not isinstance(data, list):
+                    raise TypeError()
+                tag_set_type_0 = cast(List[str], data)
+
+                return tag_set_type_0
+            except:  # noqa: E722
+                pass
+            return cast(Union[List[str], None, Unset], data)
 
         tag_set = _parse_tag_set(d.pop("tag_set", UNSET))
 
@@ -237,8 +261,8 @@ class CreateChunkData:
         create_chunk_data = cls(
             chunk_html=chunk_html,
             chunk_vector=chunk_vector,
-            file_uuid=file_uuid,
-            group_id=group_id,
+            file_id=file_id,
+            group_ids=group_ids,
             link=link,
             metadata=metadata,
             tag_set=tag_set,
