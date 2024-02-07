@@ -122,3 +122,14 @@ If you want to install this client into another project without publishing it (e
 1. If that project is not using Poetry:
     1. Build a wheel with `poetry build -f wheel`
     1. Install that wheel from the other project `pip install <path-to-wheel>`
+
+## Regenerating the apitypes
+
+Modify the .code-gen/openapi.json to a new version
+run
+
+```
+.code-gen/generate.sh
+```
+
+Everything should be up-to-date then
