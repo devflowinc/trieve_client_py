@@ -1,5 +1,10 @@
 # trieve_client_py
-A client library for accessing trieve-server
+A client library for accessing trieve.ai
+
+## Installation
+```
+pip install trieve_client_py
+```
 
 ## Usage
 First, create a client:
