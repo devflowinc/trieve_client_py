@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "trieve_client_py"
 version = "0.3.0"
-description = "A client library for accessing trieve-server"
-authors = []
+description = "A client library for accessing trieve.ai"
+authors = ["Denzell Ford <denzell.f@trieve.ai>"]
 readme = "README.md"
 packages = [
     {include = "trieve_client"},

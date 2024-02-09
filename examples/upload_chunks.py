@@ -13,14 +13,14 @@ if __name__ == "__main__":
     ## Load environment variables
     api_key = os.getenv("API_KEY")
     dataset_id = os.getenv("DATASET_ID")
-    # organization_id = os.getenv("ORGANIZATION_ID")
+    organization_id = os.getenv("ORGANIZATION_ID")
 
     client = AuthenticatedClient(base_url="https://api.trieve.ai",
         prefix="",
         token=api_key
     ).with_headers({
         "TR-Dataset": dataset_id,
-        # "TR-Organization": organization_id,
+        "TR-Organization": organization_id,
     });
 
     with client as client:

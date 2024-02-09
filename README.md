@@ -15,113 +15,116 @@ If the endpoints you're going to hit require authentication, use `AuthenticatedC
 ```python
 from trieve_client import AuthenticatedClient
 
-client = AuthenticatedClient(base_url="https://api.example.com", token="SuperSecretToken")
+api_key = os.getenv("API_KEY")
+dataset_id = os.getenv("DATASET_ID")
+organization_id = os.getenv("ORGANIZATION_ID")
+
+client = AuthenticatedClient(base_url="https://api.trieve.ai",
+    prefix="",
+    token=api_key
+).with_headers({
+    "TR-Dataset": dataset_id,
+    "TR-Organization": organization_id,
+});
 ```
 
-Now call your endpoint and use your models:
+### Uploading Chunks
 
 ```python
-from trieve_client.models import MyDataModel
-from trieve_client.api.my_tag import get_my_data_model
-from trieve_client.types import Response
+from trieve_client.api.chunk import create_chunk
+from trieve_client.models import CreateChunkData, ReturnCreatedChunk
+from trieve_client.models.error_response_body import ErrorResponseBody
 
-with client as client:
-    my_data: MyDataModel = get_my_data_model.sync(client=client)
-    # or if you need more info (e.g. status_code)
-    response: Response[MyDataModel] = get_my_data_model.sync_detailed(client=client)
-```
-
-Or do the same thing with an async version:
-
-```python
-from trieve_client.models import MyDataModel
-from trieve_client.api.my_tag import get_my_data_model
-from trieve_client.types import Response
-
-async with client as client:
-    my_data: MyDataModel = await get_my_data_model.asyncio(client=client)
-    response: Response[MyDataModel] = await get_my_data_model.asyncio_detailed(client=client)
-```
-
-By default, when you're calling an HTTPS API it will attempt to verify that SSL is working correctly. Using certificate verification is highly recommended most of the time, but sometimes you may need to authenticate to a server (especially an internal server) using a custom certificate bundle.
-
-```python
-client = AuthenticatedClient(
-    base_url="https://internal_api.example.com", 
-    token="SuperSecretToken",
-    verify_ssl="/path/to/certificate_bundle.pem",
-)
-```
-
-You can also disable certificate validation altogether, but beware that **this is a security risk**.
-
-```python
-client = AuthenticatedClient(
-    base_url="https://internal_api.example.com", 
-    token="SuperSecretToken", 
-    verify_ssl=False
-)
-```
-
-Things to know:
-1. Every path/method combo becomes a Python module with four functions:
-    1. `sync`: Blocking request that returns parsed data (if successful) or `None`
-    1. `sync_detailed`: Blocking request that always returns a `Request`, optionally with `parsed` set if the request was successful.
-    1. `asyncio`: Like `sync` but async instead of blocking
-    1. `asyncio_detailed`: Like `sync_detailed` but async instead of blocking
-
-1. All path/query params, and bodies become method arguments.
-1. If your endpoint had any tags on it, the first tag will be used as a module name for the function (my_tag above)
-1. Any endpoint which did not have a tag will be in `trieve_client.api.default`
-
-## Advanced customizations
-
-There are more settings on the generated `Client` class which let you control more runtime behavior, check out the docstring on that class for more info. You can also customize the underlying `httpx.Client` or `httpx.AsyncClient` (depending on your use-case):
-
-```python
-from trieve_client import Client
-
-def log_request(request):
-    print(f"Request event hook: {request.method} {request.url} - Waiting for response")
-
-def log_response(response):
-    request = response.request
-    print(f"Response event hook: {request.method} {request.url} - Status {response.status_code}")
-
-client = Client(
-    base_url="https://api.example.com",
-    httpx_args={"event_hooks": {"request": [log_request], "response": [log_response]}},
+chunk = CreateChunkData(
+    # We accept html inputs, the html tags are NOT embedded.
+    # HTML does help for us to highlight results in the response.
+    chunk_html=f"<h1>Hello, World! chunk {id}</h1>",
+    # If you have a link that relates to your chunk
+    link=f"https://{id}.com",
+    # Add as many tags as needed
+    tag_set=["example", "test", id],
+    # Since we queue writes, tracking id helps to prevent duplicates
+    # This can be any internal id system that you have or simply left
+    # blank
+    tracking_id=id,
+    # You can put a timestamp as when it was made, this helps with the
+    # timerange filter that we have
+    time_stamp="2021-01-01T00:00:00Z",
+    # You can place a list of group ids that the chunk will automatically
+    # be added to. Chunks can also be added to groups after.
+    group_ids=[],
+    # Similar thing with GroupID just less flexible, adding this chunk to a fileID
+    file_id=None,
+    # Chunk Vector is an alternative to chunk_html.
+    # Chunk Vector may be used if you already embedded the data
+    chunk_vector=None,
+    weight=None,
+    # We allow for arbitrary metadata
+    metadata={
+        "anykey": "any-data",
+        "id": id,
+    },
 )
 
-# Or get the underlying httpx client to modify directly with client.get_httpx_client() or client.get_async_httpx_client()
-```
-
-You can even set the httpx client directly, but beware that this will override any existing settings (e.g., base_url):
-
-```python
-import httpx
-from trieve_client import Client
-
-client = Client(
-    base_url="https://api.example.com",
+chunk_response = create_chunk.sync(
+    tr_dataset=dataset_id,
+    client=client,
+    body=chunk
 )
-# Note that base_url needs to be re-set, as would any shared cookies, headers, etc.
-client.set_httpx_client(httpx.Client(base_url="https://api.example.com", proxies="http://localhost:8030"))
+
+if type(chunk_response) == ReturnCreatedChunk:
+    print(f"queue'd pos: {chunk_response.pos_in_queue}")
+elif type(chunk_response) == ErrorResponseBody:
+    print(f"Failed {chunk_response.message}")
+    exit(1)
+
 ```
 
-## Building / publishing this package
-This project uses [Poetry](https://python-poetry.org/) to manage dependencies  and packaging.  Here are the basics:
-1. Update the metadata in pyproject.toml (e.g. authors, version)
-1. If you're using a private repository, configure it with Poetry
-    1. `poetry config repositories.<your-repository-name> <url-to-your-repository>`
-    1. `poetry config http-basic.<your-repository-name> <username> <password>`
-1. Publish the client with `poetry publish --build -r <your-repository-name>` or, if for public PyPI, just `poetry publish --build`
+### Searching Chunks
 
-If you want to install this client into another project without publishing it (e.g. for development) then:
-1. If that project **is using Poetry**, you can simply do `poetry add <path-to-this-client>` from that project
-1. If that project is not using Poetry:
-    1. Build a wheel with `poetry build -f wheel`
-    1. Install that wheel from the other project `pip install <path-to-wheel>`
+```py
+# Conduct an example search
+search_data = SearchChunkData(
+    # The query that you want to search for
+    query="example",
+    # The type of search that you want to conduct
+    search_type="semantic",
+    # Bias search results that are more recent
+    date_bias=False,
+    # Filters are based on metadata keys that you inserted
+    filters={
+        "anykey": "any-data",
+    },
+    # Rather or not to fetch collisions, this is a
+    # more advanced feature that is not used often
+    get_collisions=False,
+    # We highlight relevant parts of the search highlight_results
+    # the delimeters are what characters to split on. By default
+    # we split on sentence end. (., !, ?)
+    highlight_delimiters=None,
+    # Rather or not to highlight results
+    highlight_results=True,
+    # Require that the search results have a links that fuzzy match
+    link=["example"],
+    # What page of results to fetch
+    page=1,
+    # Only fetch results that are in a specified tag group
+    tag_set=["test"],
+    # A tuple of two strings, the start and end of the time range
+    time_range=None,
+)
+
+search_response = search_chunk.sync(tr_dataset=dataset_id, client=client, body=search_data)
+if type(search_response) == SearchChunkQueryResponseBody:
+    print(f"Got {search_response.total_chunk_pages} pages of results. Search results: {search_response}")
+elif type(search_response) == ErrorResponseBody:
+    print(f"Failed to search body {search_response.message}")
+    exit(1)
+```
+
+### More
+
+For more examples checkout the `examples/` directory for a full scripts
 
 ## Regenerating the apitypes
 

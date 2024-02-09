@@ -69,7 +69,7 @@ if __name__ == "__main__":
             elif type(create_chunk_response) == ErrorResponseBody:
                 print(f"Failed to create chunk body {create_chunk_response.message}")
                 exit(1)
-        print("test")
+
         # Connduct a new RAG chat (topic)
         topic = CreateTopicData(
             # The title of the topic
