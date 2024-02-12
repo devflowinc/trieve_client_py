@@ -1,13 +1,22 @@
+import os
+
+from dotenv import load_dotenv
+
+from trieve_client import AuthenticatedClient
 from trieve_client.api.chunk import create_chunk
 from trieve_client.api.chunk_group import create_chunk_group
 from trieve_client.api.message import create_message_completion_handler
 from trieve_client.api.topic import create_topic
-from trieve_client.models import ChunkGroup, CreateChunkData, CreateChunkGroupData, ReturnCreatedChunk, CreateTopicData, Topic
+from trieve_client.models import (
+    ChunkGroup,
+    CreateChunkData,
+    CreateChunkGroupData,
+    CreateTopicData,
+    ReturnCreatedChunk,
+    Topic,
+)
 from trieve_client.models.create_message_data import CreateMessageData
 from trieve_client.models.error_response_body import ErrorResponseBody
-import os
-from dotenv import load_dotenv
-from trieve_client import AuthenticatedClient
 
 load_dotenv()
 
@@ -16,21 +25,21 @@ dataset_id = os.getenv("DATASET_ID")
 print(api_key, dataset_id)
 
 if api_key is None or dataset_id is None:
-    raise ValueError("Please set your environment variables for VITE_API_KEY, VITE_DATASET_ID, and VITE_ORGANIZATION_ID")
+    raise ValueError(
+        "Please set your environment variables for VITE_API_KEY, VITE_DATASET_ID, and VITE_ORGANIZATION_ID"
+    )
 
 if __name__ == "__main__":
-
-    client = AuthenticatedClient(base_url="https://api.trieve.ai", prefix="", token=api_key).with_headers({
-        "TR-Dataset": dataset_id,
-    });
-
-
+    client = AuthenticatedClient(base_url="https://api.trieve.ai", prefix="", token=api_key).with_headers(
+        {
+            "TR-Dataset": dataset_id,
+        }
+    )
     with client as client:
         group = CreateChunkGroupData(
             description="This is a test group",
             name="Test Group",
-        );
-
+        )
         ## In this example, we create a group and add 10 chunks to it
         ## Groups are a way to organize chunks and can be used to filter search results
         ## A chunk can be added to multiple groups
@@ -39,7 +48,7 @@ if __name__ == "__main__":
         create_chunk_group_response = create_chunk_group.sync(tr_dataset=dataset_id, client=client, body=group)
         if type(create_chunk_group_response) == ChunkGroup:
             group_id = create_chunk_group_response.id
-            print(f"Created group {group_id}") 
+            print(f"Created group {group_id}")
         elif type(create_chunk_group_response) == ErrorResponseBody:
             print(f"Failed to create group body {create_chunk_group_response.message}")
             exit(1)
@@ -61,7 +70,7 @@ if __name__ == "__main__":
                     "anykey": "anyvalue",
                     "id": id,
                 },
-                weight=None
+                weight=None,
             )
             create_chunk_response = create_chunk.sync(tr_dataset=dataset_id, client=client, body=chunk)
             if type(create_chunk_response) == ReturnCreatedChunk:
@@ -73,7 +82,7 @@ if __name__ == "__main__":
         # Connduct a new RAG chat (topic)
         topic = CreateTopicData(
             # The title of the topic
-            # Can be set to null and assinged 
+            # Can be set to null and assinged
             # a name based on the context also
             name="Test Topic",
             # The model to use for the chat
@@ -108,11 +117,12 @@ if __name__ == "__main__":
             model=None,
         )
         print("Streaming a new message...", end="")
-        create_message_response = create_message_completion_handler.sync(tr_dataset=dataset_id, client=client, body=next_message)
+        create_message_response = create_message_completion_handler.sync(
+            tr_dataset=dataset_id, client=client, body=next_message
+        )
         if type(create_message_response) == ErrorResponseBody:
             print(f"Failed to create message body {create_message_response.message}")
             exit(1)
 
         # should be a message that is a string
         print(create_message_response)
-

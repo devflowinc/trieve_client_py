@@ -6,7 +6,7 @@
     "license": {
       "name": ""
     },
-    "version": "0.3.0"
+    "version": "0.3.1"
   },
   "paths": {
     "/api/auth": {
@@ -2061,16 +2061,6 @@
             }
           },
           {
-            "name": "delete_chunks",
-            "in": "query",
-            "description": "Whether or not to delete the chunks associated with the file",
-            "required": false,
-            "schema": {
-              "type": "boolean",
-              "nullable": true
-            }
-          },
-          {
             "name": "file_id",
             "in": "path",
             "description": "The id of the file to delete",
@@ -2078,6 +2068,16 @@
             "schema": {
               "type": "string",
               "format": "uuid"
+            }
+          },
+          {
+            "name": "delete_chunks",
+            "in": "query",
+            "description": "Whether or not to delete the chunks associated with the file",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "nullable": true
             }
           }
         ],
@@ -4921,6 +4921,13 @@
           "positive_chunk_ids"
         ],
         "properties": {
+          "limit": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The number of chunks to return. This is the number of chunks which will be returned in the response. The default is 10.",
+            "nullable": true,
+            "minimum": 0
+          },
           "positive_chunk_ids": {
             "type": "array",
             "items": {

@@ -1,10 +1,19 @@
+import os
+
+from dotenv import load_dotenv
+
+from trieve_client import AuthenticatedClient
 from trieve_client.api.chunk import create_chunk, search_chunk
 from trieve_client.api.chunk_group import create_chunk_group
-from trieve_client.models import ChunkGroup, CreateChunkData, CreateChunkGroupData, SearchChunkData, ReturnCreatedChunk, SearchChunkQueryResponseBody
+from trieve_client.models import (
+    ChunkGroup,
+    CreateChunkData,
+    CreateChunkGroupData,
+    ReturnCreatedChunk,
+    SearchChunkData,
+    SearchChunkQueryResponseBody,
+)
 from trieve_client.models.error_response_body import ErrorResponseBody
-import os
-from dotenv import load_dotenv
-from trieve_client import AuthenticatedClient
 
 load_dotenv()
 
@@ -13,21 +22,21 @@ dataset_id = os.getenv("DATASET_ID")
 print(api_key, dataset_id)
 
 if api_key is None or dataset_id is None:
-    raise ValueError("Please set your environment variables for VITE_API_KEY, VITE_DATASET_ID, and VITE_ORGANIZATION_ID")
+    raise ValueError(
+        "Please set your environment variables for VITE_API_KEY, VITE_DATASET_ID, and VITE_ORGANIZATION_ID"
+    )
 
 if __name__ == "__main__":
-
-    client = AuthenticatedClient(base_url="https://api.trieve.ai", prefix="", token=api_key).with_headers({
-        "TR-Dataset": dataset_id,
-    });
-
-
+    client = AuthenticatedClient(base_url="https://api.trieve.ai", prefix="", token=api_key).with_headers(
+        {
+            "TR-Dataset": dataset_id,
+        }
+    )
     with client as client:
         group = CreateChunkGroupData(
             description="This is a test group",
             name="Test Group",
-        );
-
+        )
         ## In this example, we create a group and add 10 chunks to it
         ## Groups are a way to organize chunks and can be used to filter search results
         ## A chunk can be added to multiple groups
@@ -36,7 +45,7 @@ if __name__ == "__main__":
         create_chunk_group_response = create_chunk_group.sync(tr_dataset=dataset_id, client=client, body=group)
         if type(create_chunk_group_response) == ChunkGroup:
             group_id = create_chunk_group_response.id
-            print(f"Created group {group_id}") 
+            print(f"Created group {group_id}")
         elif type(create_chunk_group_response) == ErrorResponseBody:
             print(f"Failed to create group body {create_chunk_group_response.message}")
             exit(1)
@@ -59,7 +68,7 @@ if __name__ == "__main__":
                     "anykey": "anyvalue",
                     "id": id,
                 },
-                weight=None
+                weight=None,
             )
             create_chunk_response = create_chunk.sync(tr_dataset=dataset_id, client=client, body=chunk)
             print(create_chunk_response)

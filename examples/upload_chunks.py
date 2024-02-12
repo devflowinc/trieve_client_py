@@ -1,8 +1,10 @@
+import os
+
 from dotenv import load_dotenv
+
 from trieve_client import AuthenticatedClient
 from trieve_client.api.chunk import create_chunk
 from trieve_client.models import CreateChunkData, ReturnCreatedChunk
-import os
 from trieve_client.models.error_response_body import ErrorResponseBody
 
 ### This sample only shows how to upload chunks to Trieve
@@ -15,17 +17,15 @@ if __name__ == "__main__":
     dataset_id = os.getenv("DATASET_ID")
     organization_id = os.getenv("ORGANIZATION_ID")
 
-    client = AuthenticatedClient(base_url="https://api.trieve.ai",
-        prefix="",
-        token=api_key
-    ).with_headers({
-        "TR-Dataset": dataset_id,
-        "TR-Organization": organization_id,
-    });
-
+    client = AuthenticatedClient(base_url="https://api.trieve.ai", prefix="", token=api_key).with_headers(
+        {
+            "TR-Dataset": dataset_id,
+            "TR-Organization": organization_id,
+        }
+    )
     with client as client:
         for i in range(10):
-            id = f"example-chunk-id"
+            id = "example-chunk-id"
             chunk = CreateChunkData(
                 # We accept html inputs, the html tags are NOT embedded.
                 # HTML does help for us to highlight results in the response.
@@ -57,11 +57,7 @@ if __name__ == "__main__":
                 },
             )
 
-            chunk_response = create_chunk.sync(
-                tr_dataset=dataset_id,
-                client=client,
-                body=chunk
-            )
+            chunk_response = create_chunk.sync(tr_dataset=dataset_id, client=client, body=chunk)
 
             if type(chunk_response) == ReturnCreatedChunk:
                 print(f"queue'd pos: {chunk_response.pos_in_queue}")
