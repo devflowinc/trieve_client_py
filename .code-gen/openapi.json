@@ -6,7 +6,7 @@
     "license": {
       "name": ""
     },
-    "version": "0.3.1"
+    "version": "0.3.2"
   },
   "paths": {
     "/api/auth": {
@@ -3385,7 +3385,7 @@
     "/api/user/files/{user_id}": {
       "get": {
         "tags": [
-          "user"
+          "file"
         ],
         "summary": "get_user_files",
         "description": "get_user_files\n\nGet all files which belong to a given user specified by the user_id parameter.",
