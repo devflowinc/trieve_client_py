@@ -1,10 +1,22 @@
-A client library for accessing trieve.ai
-
 # THIS LIBRARY has been archived.
-Please refer to our api spec and use `requests` directly instead of using this library.
+Please refer to our [api spec](https://api.trieve.ai/redoc) and use `requests` directly instead of using this library.
+If you are stubborn and still insist on using this library you will need to update and regenerate the api types by following our guide.
 
+## Archiving
 
+Refer to this issue about archiving https://github.com/devflowinc/trieve_client_py/issues/2
 
+### Regenerating the apitypes
+Modify the .code-gen/openapi.json to a new version
+run
+
+```
+.code-gen/generate.sh
+```
+
+Everything should be up-to-date then
+
+#### Auth
 If the endpoints you're going to hit require authentication, use `AuthenticatedClient` instead:
 
 ```python
@@ -23,7 +35,7 @@ client = AuthenticatedClient(base_url="https://api.trieve.ai",
 });
 ```
 
-### Uploading Chunks
+#### Uploading Chunks
 
 ```python
 from trieve_client.api.chunk import create_chunk
@@ -75,7 +87,7 @@ elif type(chunk_response) == ErrorResponseBody:
 
 ```
 
-### Searching Chunks
+#### Searching Chunks
 
 ```py
 # Conduct an example search
@@ -117,17 +129,7 @@ elif type(search_response) == ErrorResponseBody:
     exit(1)
 ```
 
-### More
+#### More
 
 For more examples checkout the `examples/` directory for a full scripts
 
-## Regenerating the apitypes
-
-Modify the .code-gen/openapi.json to a new version
-run
-
-```
-.code-gen/generate.sh
-```
-
-Everything should be up-to-date then
