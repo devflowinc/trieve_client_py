@@ -1,19 +1,9 @@
-# trieve_client_py
 A client library for accessing trieve.ai
 
-## Installation
-```
-pip install trieve_client_py
-```
+# THIS LIBRARY has been archived.
+Please refer to our api spec and use `requests` directly instead of using this library.
 
-## Usage
-First, create a client:
 
-```python
-from trieve_client import Client
-
-client = Client(base_url="https://api.example.com")
-```
 
 If the endpoints you're going to hit require authentication, use `AuthenticatedClient` instead:
 
